@@ -7,4 +7,5 @@
     <color name="green_table_end">#FF005D16</color>
     <color name="green_table_start">#03A564</color>
     <color name="ice">#DBF1FD</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
