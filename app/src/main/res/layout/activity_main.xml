@@ -30,7 +30,8 @@
             app:layout_constraintStart_toEndOf="@+id/pool_player3"
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toStartOf="@+id/pool_player4"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            tools:listitem="@layout/player_card_item_h"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
@@ -42,7 +43,8 @@
             app:layout_constraintStart_toEndOf="@+id/pool_player3"
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toStartOf="@+id/pool_player4"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            tools:listitem="@layout/player_card_item_h"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="56dp"
@@ -53,7 +55,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/pool_player3"/>
+            android:id="@+id/pool_player3"
+            tools:listitem="@layout/player_card_item_v"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="56dp"
@@ -64,6 +67,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/pool_player4"/>
+            android:id="@+id/pool_player4"
+            tools:listitem="@layout/player_card_item_v"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

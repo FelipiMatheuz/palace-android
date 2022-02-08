@@ -1,4 +1,4 @@
-package org.felipimz.palace_android
+package org.felipimz.palace
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package org.felipimz.palace_android
+package org.felipimz.palace
 
 import org.junit.Test
 

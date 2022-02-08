@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Palace Card Game</string>
+    <string name="card_item">card item</string>
 </resources>
