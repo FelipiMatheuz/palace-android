@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="yellow_200">#FFFFF263</color>
+    <color name="yellow_700">#FFFBC02D</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green_table_end">#FF005D16</color>
     <color name="green_table_start">#03A564</color>
     <color name="ice">#DBF1FD</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="disabled">#55000000</color>
+
+    <!-- Player Colors   -->
+    <color name="blue33">#540000FF</color>
+    <color name="red33">#54FF0000</color>
+    <color name="yellow33">#54FFFF00</color>
+    <color name="green33">#5400FF00</color>
 </resources>

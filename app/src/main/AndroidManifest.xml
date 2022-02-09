@@ -10,11 +10,11 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher"
             android:supportsRtl="true"
-            android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity"
             android:theme="@style/Theme.Palaceandroid">
         <activity
                 android:name="org.felipimz.palace.MainActivity"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

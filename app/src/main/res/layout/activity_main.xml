@@ -12,13 +12,112 @@
             android:id="@+id/message_table"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Game Start"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:textColor="@color/ice"
-            android:textSize="34sp"/>
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/cardView2_player1"/>
+
+    <TextView
+            android:id="@+id/score_player1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="P1: 0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/score_player2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/blue33"
+            android:textSize="16sp"
+            android:layout_margin="4dp"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <TextView
+            android:id="@+id/score_player2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="P2: 0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/score_player1"
+            app:layout_constraintEnd_toStartOf="@+id/score_player3"
+            android:textColor="@color/red33"
+            android:textSize="16sp"
+            android:layout_margin="4dp"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <TextView
+            android:id="@+id/score_player3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="P3: 0"
+            app:layout_constraintStart_toEndOf="@+id/score_player2"
+            app:layout_constraintEnd_toStartOf="@+id/score_player4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/yellow33"
+            android:textSize="16sp"
+            android:layout_margin="4dp"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <TextView
+            android:id="@+id/score_player4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="P4: 0"
+            app:layout_constraintStart_toEndOf="@+id/score_player3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/green33"
+            android:textSize="16sp"
+            android:layout_margin="4dp"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_pile"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintHorizontal_bias="0.3">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card_pile"
+                android:layout_gravity="center"
+                tools:tint="@color/disabled"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_burned"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintHorizontal_bias="0.7">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card_burned"
+                android:layout_gravity="center"
+                tools:tint="@color/disabled"
+                tools:src="@drawable/red_card"/>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
@@ -31,7 +130,69 @@
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toStartOf="@+id/pool_player4"
             android:layout_marginEnd="8dp"
+            android:background="@color/blue33"
             tools:listitem="@layout/player_card_item_h"/>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1_player1"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="@id/pool_player1"
+            app:layout_constraintEnd_toStartOf="@id/cardView2_player1"
+            app:layout_constraintBottom_toTopOf="@id/pool_player1"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/blue33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card1_player1"
+                android:layout_gravity="center"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2_player1"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/cardView1_player1"
+            app:layout_constraintEnd_toStartOf="@id/cardView3_player1"
+            app:layout_constraintBottom_toTopOf="@id/pool_player1"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/blue33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card2_player1"
+                android:layout_gravity="center"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3_player1"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/cardView2_player1"
+            app:layout_constraintEnd_toEndOf="@id/pool_player1"
+            app:layout_constraintBottom_toTopOf="@id/pool_player1"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/blue33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card3_player1"
+                android:layout_gravity="center"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
@@ -44,7 +205,73 @@
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toStartOf="@+id/pool_player4"
             android:layout_marginEnd="8dp"
-            tools:listitem="@layout/player_card_item_h"/>
+            android:rotation="180"
+            tools:listitem="@layout/player_card_item_h"
+            android:background="@color/red33"/>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1_player2"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="@id/pool_player2"
+            app:layout_constraintEnd_toStartOf="@id/cardView2_player2"
+            app:layout_constraintTop_toBottomOf="@id/pool_player2"
+            android:layout_marginTop="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/red33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card1_player2"
+                android:rotation="180"
+                android:layout_gravity="center"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2_player2"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/cardView1_player2"
+            app:layout_constraintEnd_toStartOf="@id/cardView3_player2"
+            app:layout_constraintTop_toBottomOf="@id/pool_player2"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/red33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card2_player2"
+                android:rotation="180"
+                android:layout_gravity="center"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3_player2"
+            android:layout_width="38dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/cardView2_player2"
+            app:layout_constraintEnd_toEndOf="@id/pool_player2"
+            app:layout_constraintTop_toBottomOf="@id/pool_player2"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/red33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card3_player2"
+                android:layout_gravity="center"
+                android:rotation="180"
+                tools:src="@drawable/blue_card"/>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="56dp"
@@ -56,7 +283,77 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:id="@+id/pool_player3"
-            tools:listitem="@layout/player_card_item_v"/>
+            tools:listitem="@layout/player_card_item_v"
+            android:background="@color/yellow33"/>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1_player3"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/pool_player3"
+            app:layout_constraintBottom_toTopOf="@id/cardView2_player3"
+            app:layout_constraintTop_toTopOf="@id/pool_player3"
+            android:layout_marginStart="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/yellow33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="90"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card1_player3"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2_player3"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/pool_player3"
+            app:layout_constraintBottom_toTopOf="@id/cardView3_player3"
+            app:layout_constraintTop_toBottomOf="@id/cardView1_player3"
+            android:layout_marginStart="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/yellow33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="90"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card2_player3"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3_player3"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintStart_toEndOf="@id/pool_player3"
+            app:layout_constraintBottom_toBottomOf="@id/pool_player3"
+            app:layout_constraintTop_toBottomOf="@id/cardView2_player3"
+            android:layout_marginStart="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/yellow33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="90"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card3_player3"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="56dp"
@@ -68,6 +365,77 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:id="@+id/pool_player4"
-            tools:listitem="@layout/player_card_item_v"/>
+            android:rotation="180"
+            tools:listitem="@layout/player_card_item_v"
+            android:background="@color/green33"/>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1_player4"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toStartOf="@id/pool_player4"
+            app:layout_constraintBottom_toTopOf="@id/cardView2_player4"
+            app:layout_constraintTop_toTopOf="@id/pool_player4"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/green33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="270"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card1_player4"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2_player4"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toStartOf="@id/pool_player4"
+            app:layout_constraintBottom_toTopOf="@id/cardView3_player4"
+            app:layout_constraintTop_toBottomOf="@id/cardView1_player4"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/green33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="270"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card2_player4"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3_player4"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toStartOf="@id/pool_player4"
+            app:layout_constraintBottom_toBottomOf="@id/pool_player4"
+            app:layout_constraintTop_toBottomOf="@id/cardView2_player4"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:backgroundTint="@color/green33">
+
+        <ImageView
+                android:layout_height="56dp"
+                android:layout_width="56dp"
+                android:rotation="270"
+                android:layout_gravity="center"
+                android:contentDescription="@string/card_item"
+                android:id="@+id/card3_player4"
+                tools:src="@drawable/red_card">
+        </ImageView>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
