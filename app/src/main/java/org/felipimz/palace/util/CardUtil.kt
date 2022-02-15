@@ -4,6 +4,7 @@ import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.WildCardEffect
 
 class CardUtil {
+
     private val deck: MutableList<Card> = mutableListOf(
         Card("two_of_diamonds", 2, WildCardEffect.resetValue),
         Card("three_of_diamonds", 3, WildCardEffect.none),
@@ -74,9 +75,5 @@ class CardUtil {
             Card("joker", 1, WildCardEffect.reverse)
         )
         return deck
-    }
-
-    fun shuffleDeck() {
-        deck.shuffle()
     }
 }

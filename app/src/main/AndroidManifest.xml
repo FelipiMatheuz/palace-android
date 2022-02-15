@@ -12,7 +12,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Palaceandroid">
         <activity
-                android:name="org.felipimz.palace.MainActivity"
+                android:name="org.felipimz.palace.activity.MainActivity"
                 android:screenOrientation="userLandscape"
                 tools:ignore="LockedOrientationActivity"
                 android:exported="true">
