@@ -8,6 +8,7 @@
         android:background="@color/transparent">
 
     <androidx.cardview.widget.CardView
+            android:id="@+id/card_cv"
             android:layout_width="38dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
