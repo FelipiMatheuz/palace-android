@@ -41,4 +41,8 @@ class PreferencesViewModel(context: Context) : ViewModel() {
     fun loadRules(): String {
         return preferences.rules
     }
+
+    fun loadCard(): String {
+        return preferences.card
+    }
 }

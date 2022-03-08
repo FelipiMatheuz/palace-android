@@ -6,4 +6,34 @@
     <string name="history">Records</string>
     <string name="multiplayer">Multiplayer</string>
     <string name="title_menu">Palace</string>
+    <string name="nickname">Nickname</string>
+    <string name="use_joker">Use Joker?</string>
+    <string name="deck">Deck</string>
+    <string name="rules">Rules</string>
+    <string name="settings_default">Default</string>
+    <string name="custom">Custom</string>
+    <string name="settings_burn_pile">Burn Pile:</string>
+    <string name="settings_reset_value">Reset Value:</string>
+    <string name="settings_force_down">Force Lower Value:</string>
+    <string name="settings_reverse">Reverse Direction:</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="msg_multiple_effect_same_card">Cannot a card has multiple effects. Check and try again.</string>
+
+    <string-array name="cards_array">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>J</item>
+        <item>Q</item>
+        <item>K</item>
+        <item>A</item>
+        <item>Joker</item>
+    </string-array>
 </resources>

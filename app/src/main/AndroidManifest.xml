@@ -12,12 +12,6 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Palaceandroid">
         <activity
-                android:name=".activity.SettingsActivity"
-                android:exported="true"/>
-        <activity
-                android:name=".activity.HistoryActivity"
-                android:exported="true"/>
-        <activity
                 android:name=".activity.MenuActivity"
                 android:exported="true"
                 android:screenOrientation="userLandscape"
@@ -32,8 +26,17 @@
                 android:name=".activity.MainActivity"
                 android:exported="true"
                 android:screenOrientation="userLandscape"
-                tools:ignore="LockedOrientationActivity">
-        </activity>
+                tools:ignore="LockedOrientationActivity"/>
+        <activity
+                android:name=".activity.SettingsActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
+        <activity
+                android:name=".activity.HistoryActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
     </application>
 
 </manifest>

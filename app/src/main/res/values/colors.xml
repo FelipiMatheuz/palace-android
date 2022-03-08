@@ -10,6 +10,7 @@
     <color name="ice">#DBF1FD</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="disabled">#55000000</color>
+    <color name="dark_gray">#FF263238</color>
 
     <!-- Player Colors   -->
     <color name="blue33">#540000FF</color>
