@@ -64,6 +64,14 @@ class CardUtil {
     )
 
     fun getDeckDefault(): MutableList<Card> {
+        val eights = deck.filter { f ->
+            f.name.contains("eight")
+        }
+        eights.forEach {
+            val eightWithwildCardEffect = it
+            eightWithwildCardEffect.wildCard = WildCardEffect.RESET
+            deck[deck.indexOf(it)] = eightWithwildCardEffect
+        }
         return deck
     }
 

@@ -19,6 +19,7 @@
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="msg_multiple_effect_same_card">Cannot a card has multiple effects. Check and try again.</string>
+    <string name="wildcards_as_special">Wildcards as Special</string>
 
     <string-array name="cards_array">
         <item>2</item>

@@ -12,7 +12,7 @@ import org.felipimz.palace.viewmodel.PreferencesViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: ActivitySettingsBinding
     private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var cardAdapter: ArrayAdapter<String>
 
@@ -34,11 +34,15 @@ class SettingsActivity : AppCompatActivity() {
             val rules = if (binding.rbDefault.isChecked) {
                 "default"
             } else {
-                if (binding.spBurnPile.selectedItem != binding.spReset.selectedItem && binding.spBurnPile.selectedItem != binding.spForceDown.selectedItem
-                    && binding.spBurnPile.selectedItem != binding.spReverse.selectedItem && binding.spReset.selectedItem != binding.spForceDown.selectedItem
-                    && binding.spReset.selectedItem != binding.spReverse.selectedItem && binding.spForceDown.selectedItem != binding.spReverse.selectedItem
-                ) {
-                    "${binding.spBurnPile.selectedItem};${binding.spReset.selectedItem};${binding.spForceDown.selectedItem};${binding.spReverse.selectedItem}"
+                val cardRulesList: List<String> = listOf(
+                    binding.spBurnPile.selectedItem.toString(),
+                    binding.spReset.selectedItem.toString(),
+                    binding.spForceDown.selectedItem.toString(),
+                    binding.spReverse.selectedItem.toString()
+                )
+                if (cardRulesList.size == cardRulesList.distinct().size) {
+                    cardRulesList.toString().substring(1, cardRulesList.toString().length - 1)
+                        .replace(",", ";").replace(" ", "")
                 } else {
                     "NA"
                 }
@@ -47,6 +51,7 @@ class SettingsActivity : AppCompatActivity() {
                 preferencesViewModel.preferences = Preferences(
                     binding.etNickname.toString(),
                     binding.tbUseJoker.isChecked,
+                    binding.cbWildcardSpecial.isChecked,
                     rules,
                     binding.spDeck.selectedItem.toString()
                 )
@@ -54,12 +59,14 @@ class SettingsActivity : AppCompatActivity() {
                 val editor = preferences.edit()
                 editor.putString("nickname", binding.etNickname.text.toString())
                 editor.putBoolean("deckWithJoker", binding.tbUseJoker.isChecked)
+                editor.putBoolean("wildcardAsSpecial", binding.cbWildcardSpecial.isChecked)
                 editor.putString("card", binding.spDeck.selectedItem.toString())
                 editor.putString("rules", rules)
                 editor.apply()
                 onBackPressed()
             } else {
                 Toast.makeText(this, resources.getString(R.string.msg_multiple_effect_same_card), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -108,6 +115,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initToogleButton() {
+        binding.cbWildcardSpecial.isChecked = preferencesViewModel.loadWildCardAsSpecial()
         binding.tbUseJoker.isChecked = preferencesViewModel.loadDeckWithJoker()
         checkToogleButton(binding.tbUseJoker, binding.tbUseJoker.isChecked)
         binding.tbUseJoker.setOnCheckedChangeListener { button, isChecked ->

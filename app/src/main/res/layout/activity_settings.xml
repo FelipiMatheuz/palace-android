@@ -73,7 +73,8 @@
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/tv_rules"
             android:layout_marginTop="32dp"
-            android:layout_marginStart="32dp"/>
+            android:layout_marginStart="32dp"
+            android:tooltipText="Default is 10"/>
 
     <TextView
             android:text="@string/settings_reset_value"
@@ -86,7 +87,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_rules"
             android:layout_marginTop="32dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintStart_toEndOf="@+id/sp_burn_pile"/>
+            app:layout_constraintStart_toEndOf="@+id/sp_burn_pile"
+            android:tooltipText="Default is 2"/>
 
     <TextView
             android:text="@string/settings_force_down"
@@ -99,7 +101,8 @@
             android:layout_marginTop="32dp"
             android:layout_marginStart="32dp"
             app:layout_constraintTop_toBottomOf="@+id/tv_burn_pile"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:tooltipText="Default is 7"/>
 
     <TextView
             android:text="@string/settings_reverse"
@@ -112,7 +115,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_burn_pile"
             android:layout_marginTop="32dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintStart_toEndOf="@id/sp_force_down"/>
+            app:layout_constraintStart_toEndOf="@id/sp_force_down"
+            android:tooltipText="Default is Joker or 8"/>
 
     <EditText
             android:layout_width="wrap_content"
@@ -241,4 +245,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_apply"
             style="@style/menu_button"/>
+
+    <CheckBox
+            android:text="@string/wildcards_as_special"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cb_wildcard_special"
+            app:layout_constraintStart_toEndOf="@+id/rg_rules"
+            app:layout_constraintTop_toTopOf="@+id/tv_rules"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_rules"
+            android:layout_marginStart="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
