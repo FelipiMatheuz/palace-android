@@ -1,14 +1,12 @@
 package org.felipimz.palace.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.felipimz.palace.R
 import org.felipimz.palace.adapter.HistoryAdapter
 import org.felipimz.palace.databinding.ActivityHistoryBinding
 import org.felipimz.palace.viewmodel.HistoryViewModel
-import org.felipimz.palace.viewmodel.MainViewModel
 import org.felipimz.palace.viewmodel.PreferencesViewModel
 
 class HistoryActivity : AppCompatActivity() {
