@@ -8,7 +8,7 @@ import org.felipimz.palace.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMenuBinding
+    private lateinit var binding: ActivityMenuBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

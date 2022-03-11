@@ -17,4 +17,10 @@
     <color name="red33">#54FF0000</color>
     <color name="yellow33">#54FFFF00</color>
     <color name="green33">#5400FF00</color>
+
+    <!-- Position Colors -->
+    <color name="gold">#FFFFD700</color>
+    <color name="silver">#FFC0C0C0</color>
+    <color name="bronze">#FFCD7F32</color>
+
 </resources>

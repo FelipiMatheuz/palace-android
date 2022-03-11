@@ -6,7 +6,8 @@ import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.Faced
 import org.felipimz.palace.model.Pilar
 import org.felipimz.palace.model.Position
-import org.felipimz.palace.util.CardUtil
+import org.felipimz.palace.util.getDeckDefault
+import org.felipimz.palace.util.getDeckWithJoker
 
 class MainViewModel : ViewModel() {
 
@@ -39,11 +40,10 @@ class MainViewModel : ViewModel() {
 
     fun distributeCard(deckWithJoker: Boolean) {
         //init deck and shuffle
-        val cardUtil = CardUtil()
         pile.value = if (deckWithJoker) {
-            cardUtil.getDeckWithJoker()
+            getDeckWithJoker()
         } else {
-            cardUtil.getDeckDefault()
+            getDeckDefault()
         }
 
         pile.value?.shuffled()
