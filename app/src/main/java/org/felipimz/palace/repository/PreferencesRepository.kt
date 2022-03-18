@@ -1,4 +1,4 @@
-package org.felipimz.palace.viewmodel
+package org.felipimz.palace.repository
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.felipimz.palace.R
 import org.felipimz.palace.model.Preferences
 
-class PreferencesViewModel(context: Context) : ViewModel() {
+class PreferencesRepository(context: Context) : ViewModel() {
 
     var preferences: Preferences
 

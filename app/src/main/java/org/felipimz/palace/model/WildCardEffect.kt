@@ -5,5 +5,5 @@ enum class WildCardEffect {
     BURNPILE,
     RESET,
     FORCEDOWN,
-    REVERSE //joker
+    REVERSE
 }

@@ -8,12 +8,12 @@ import android.widget.Toast
 import org.felipimz.palace.R
 import org.felipimz.palace.databinding.ActivitySettingsBinding
 import org.felipimz.palace.model.Preferences
-import org.felipimz.palace.viewmodel.PreferencesViewModel
+import org.felipimz.palace.repository.PreferencesRepository
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var preferencesViewModel: PreferencesViewModel
+    private lateinit var preferencesViewModel: PreferencesRepository
     private lateinit var cardAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preferencesViewModel = PreferencesViewModel(this)
+        preferencesViewModel = PreferencesRepository(this)
         binding.etNickname.setText(preferencesViewModel.loadNickName())
         initToogleButton()
         initDeck()

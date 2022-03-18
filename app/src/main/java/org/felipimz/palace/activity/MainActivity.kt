@@ -13,13 +13,13 @@ import org.felipimz.palace.model.Faced
 import org.felipimz.palace.model.Pilar
 import org.felipimz.palace.model.Position
 import org.felipimz.palace.viewmodel.MainViewModel
-import org.felipimz.palace.viewmodel.PreferencesViewModel
+import org.felipimz.palace.repository.PreferencesRepository
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
-    private lateinit var preferencesViewModel: PreferencesViewModel
+    private lateinit var preferencesViewModel: PreferencesRepository
 
     private lateinit var cardHandAdapter1: CardHandAdapter
     private lateinit var cardHandAdapter2: CardHandAdapter
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preferencesViewModel = PreferencesViewModel(this)
+        preferencesViewModel = PreferencesRepository(this)
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
         viewModel.distributeCard(preferencesViewModel.loadDeckWithJoker())

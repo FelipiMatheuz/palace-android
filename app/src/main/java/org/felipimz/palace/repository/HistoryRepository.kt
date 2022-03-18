@@ -1,4 +1,4 @@
-package org.felipimz.palace.viewmodel
+package org.felipimz.palace.repository
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.felipimz.palace.model.History
 
-class HistoryViewModel(context: Context) : ViewModel() {
+class HistoryRepository(context: Context) : ViewModel() {
 
     private var historyList: MutableList<History>
     private var historyFile: SharedPreferences
