@@ -1,17 +1,17 @@
 package org.felipimz.palace.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import org.felipimz.palace.R
+import org.felipimz.palace.activity.MainActivity
 import org.felipimz.palace.model.Card
+import org.felipimz.palace.model.Position
 
-class CardHandAdapter(val listCard: List<Card>, val orientation: Boolean, val context: Context) :
+class CardHandAdapter(var listCard: List<Card>, val orientation: Boolean, val activity: MainActivity) :
     RecyclerView.Adapter<CardHandAdapter.CardHandHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHandHolder {
@@ -31,19 +31,27 @@ class CardHandAdapter(val listCard: List<Card>, val orientation: Boolean, val co
 
     override fun onBindViewHolder(holder: CardHandHolder, position: Int) {
         val card = listCard[position]
-
-        val resId = context.resources.getIdentifier(card.name, "drawable", context.packageName)
+        val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
         holder.ivCardItem.setImageResource(resId)
-
-        holder.cvCard.setOnClickListener {
-            Toast.makeText(context, card.name, Toast.LENGTH_SHORT).show()
+        holder.cvCard.setOnClickListener { view ->
+            if (card.position == Position.HAND_CLICKED) {
+                activity.viewModel.addToDiscard(card)
+            } else {
+                listCard.filter { c ->
+                    c.position == Position.HAND_CLICKED
+                }.forEach { c ->
+                    c.position = Position.HAND
+                }
+                card.position = Position.HAND_CLICKED
+                view.foreground = activity.getDrawable(R.drawable.highlight)
+            }
         }
     }
 
     override fun getItemCount() = listCard.size
 
     class CardHandHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var ivCardItem = view.findViewById<ImageView>(R.id.card_item)
-        var cvCard = view.findViewById<CardView>(R.id.card_cv)
+        var ivCardItem: ImageView = view.findViewById(R.id.card_item)
+        var cvCard: CardView = view.findViewById(R.id.card_cv)
     }
 }

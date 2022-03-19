@@ -1,77 +1,103 @@
 package org.felipimz.palace.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.felipimz.palace.model.Card
-import org.felipimz.palace.model.Faced
-import org.felipimz.palace.model.Pilar
+import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
-import org.felipimz.palace.util.getDeckDefault
-import org.felipimz.palace.util.getDeckWithJoker
+import org.felipimz.palace.util.CardUtil
 
 class MainViewModel : ViewModel() {
 
-    //players deck
-    val p1Hand = MutableLiveData<MutableList<Card>>()
-    val p2Hand = MutableLiveData<MutableList<Card>>()
-    val p3Hand = MutableLiveData<MutableList<Card>>()
-    val p4Hand = MutableLiveData<MutableList<Card>>()
-
-    //players pilars
-    val p1Pilar = MutableLiveData<MutableList<Pilar>>()
-    val p2Pilar = MutableLiveData<MutableList<Pilar>>()
-    val p3Pilar = MutableLiveData<MutableList<Pilar>>()
-    val p4Pilar = MutableLiveData<MutableList<Pilar>>()
-
     //global deck
-    val pile = MutableLiveData<MutableList<Card>>()
+    val deck = MutableLiveData<MutableList<Card>>()
+    private val cardUtil = CardUtil()
 
     init {
-        //init lists
-        p1Hand.value = mutableListOf()
-        p2Hand.value = mutableListOf()
-        p3Hand.value = mutableListOf()
-        p4Hand.value = mutableListOf()
-        p1Pilar.value = mutableListOf()
-        p2Pilar.value = mutableListOf()
-        p3Pilar.value = mutableListOf()
-        p4Pilar.value = mutableListOf()
+        deck.value = mutableListOf()
     }
 
     fun distributeCard(deckWithJoker: Boolean) {
         //init deck and shuffle
-        pile.value = if (deckWithJoker) {
-            getDeckWithJoker()
+        deck.value = if (deckWithJoker) {
+            cardUtil.getDeckWithJoker()
         } else {
-            getDeckDefault()
+            cardUtil.getDeckDefault()
         }
 
-        pile.value?.shuffled()
+        deck.value = deck.value?.shuffled()?.toMutableList()
 
-        //get in hands
-        for (i in 0..2) {
-            p1Hand.value?.add(pile.value!!.last())
-            pile.value?.removeLast()
-            p2Hand.value?.add(pile.value!!.last())
-            pile.value?.removeLast()
-            p3Hand.value?.add(pile.value!!.last())
-            pile.value?.removeLast()
-            p4Hand.value?.add(pile.value!!.last())
-            pile.value?.removeLast()
-        }
-
-        //distribute the rest
-        for (p in Position.values()) {
-            for (f in Faced.values()) {
-                p1Pilar.value?.add(Pilar(p, pile.value!!.last(), f))
-                pile.value?.removeLast()
-                p2Pilar.value?.add(Pilar(p, pile.value!!.last(), f))
-                pile.value?.removeLast()
-                p3Pilar.value?.add(Pilar(p, pile.value!!.last(), f))
-                pile.value?.removeLast()
-                p4Pilar.value?.add(Pilar(p, pile.value!!.last(), f))
-                pile.value?.removeLast()
+        var cardIndex = 0
+        for (card in deck.value!!) {
+            //distribute on hands
+            if (cardIndex < 3) {
+                card.position = Position.HAND
+                card.owner = Owner.PLAYER1
+            } else if (cardIndex < 6) {
+                card.position = Position.HAND
+                card.owner = Owner.PLAYER2
+            } else if (cardIndex < 9) {
+                card.position = Position.HAND
+                card.owner = Owner.PLAYER3
+            } else if (cardIndex < 12) {
+                card.position = Position.HAND
+                card.owner = Owner.PLAYER4
+                //distribute on table
+            } else {
+                break
             }
+            cardIndex++
         }
+        //distribute the rest
+        cardIndex = distributeTable(cardIndex, Owner.PLAYER1)
+        cardIndex = distributeTable(cardIndex, Owner.PLAYER2)
+        cardIndex = distributeTable(cardIndex, Owner.PLAYER3)
+        distributeTable(cardIndex, Owner.PLAYER4)
+    }
+
+    private fun distributeTable(index: Int, owner: Owner): Int {
+        deck.value!![index].position = Position.TABLE_LEFT_DOWN
+        deck.value!![index].owner = owner
+        deck.value!![index + 1].position = Position.TABLE_LEFT_UP
+        deck.value!![index + 1].owner = owner
+        deck.value!![index + 2].position = Position.TABLE_CENTER_DOWN
+        deck.value!![index + 2].owner = owner
+        deck.value!![index + 3].position = Position.TABLE_CENTER_UP
+        deck.value!![index + 3].owner = owner
+        deck.value!![index + 4].position = Position.TABLE_RIGHT_DOWN
+        deck.value!![index + 4].owner = owner
+        deck.value!![index + 5].position = Position.TABLE_RIGHT_UP
+        deck.value!![index + 5].owner = owner
+
+        return index + 6
+    }
+
+    fun addToDiscard(card: Card) {
+        val target = deck.value!!.single {
+            it == card
+        }
+        val previousTopDiscardedCard = deck.value!!.singleOrNull {
+            it.position == Position.ON_TOP
+        }
+        previousTopDiscardedCard?.position = Position.NONE
+        target.position = Position.ON_TOP
+        target.owner = Owner.DISCARDED
+        deck.postValue(deck.value)
+    }
+
+    fun getCard(player: Int) {
+
+        val target = deck.value!!.filter {
+            it.owner == Owner.ON_PILE
+        }
+        target[0].position = Position.HAND
+        target[0].owner = when (player) {
+            1 -> Owner.PLAYER1
+            2 -> Owner.PLAYER2
+            3 -> Owner.PLAYER3
+            else -> Owner.PLAYER4
+        }
+        deck.postValue(deck.value)
     }
 }

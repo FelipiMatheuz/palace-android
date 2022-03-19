@@ -28,6 +28,8 @@
     <string name="ordinal">th</string>
     <string name="matches">matches</string>
     <string name="wins">wins</string>
+    <string name="confirm_exit">Are you sure you want to exit this match?</string>
+    <string name="yes">Yes</string>
 
     <string-array name="cards_array">
         <item>2</item>

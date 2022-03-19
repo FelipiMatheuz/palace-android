@@ -4,5 +4,6 @@ data class Card(
     var name: String = "",
     var value: Int = 0,
     var wildCard: WildCardEffect = WildCardEffect.NONE,
-    var clicked: Boolean = false
+    var position: Position = Position.NONE,
+    var owner: Owner = Owner.ON_PILE
 )

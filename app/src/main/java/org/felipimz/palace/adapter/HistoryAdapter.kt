@@ -35,16 +35,18 @@ class HistoryAdapter(val historyList: List<History>, val context: Context) :
             ContextCompat.getColor(context, getColorRes(history.playerPosition)),
             android.graphics.PorterDuff.Mode.ADD
         )
+        //update adapter
+        notifyItemChanged(position)
     }
 
     override fun getItemCount() = historyList.size
 
     class HistoryHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        var ivCrownPlace = view.findViewById<ImageView>(R.id.iv_crown_place)
-        var tvPosition = view.findViewById<TextView>(R.id.tv_position)
-        var tvGameMode = view.findViewById<TextView>(R.id.tv_gamemode)
-        var tvDate = view.findViewById<TextView>(R.id.tv_date)
+        var ivCrownPlace: ImageView = view.findViewById(R.id.iv_crown_place)
+        var tvPosition: TextView = view.findViewById(R.id.tv_position)
+        var tvGameMode: TextView = view.findViewById(R.id.tv_gamemode)
+        var tvDate: TextView = view.findViewById(R.id.tv_date)
 
     }
 }
