@@ -12,6 +12,7 @@ class MainViewModel : ViewModel() {
     //global deck
     val deck = MutableLiveData<MutableList<Card>>()
     private val cardUtil = CardUtil()
+    var currentTurn: Int = 1
 
     init {
         deck.value = mutableListOf()
@@ -83,6 +84,11 @@ class MainViewModel : ViewModel() {
         target.position = Position.ON_TOP
         target.owner = Owner.DISCARDED
         deck.postValue(deck.value)
+        if (currentTurn == 4) {
+            currentTurn = 1
+        } else {
+            currentTurn++
+        }
     }
 
     fun getCard(player: Int) {
@@ -90,6 +96,9 @@ class MainViewModel : ViewModel() {
         val target = deck.value!!.filter {
             it.owner == Owner.ON_PILE
         }
+        if (target.isEmpty())
+            return
+
         target[0].position = Position.HAND
         target[0].owner = when (player) {
             1 -> Owner.PLAYER1

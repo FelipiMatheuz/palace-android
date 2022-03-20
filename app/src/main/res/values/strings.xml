@@ -30,6 +30,11 @@
     <string name="wins">wins</string>
     <string name="confirm_exit">Are you sure you want to exit this match?</string>
     <string name="yes">Yes</string>
+    <string name="game_start">Game Start</string>
+    <string name="turn">Turn:</string>
+    <string name="bot_turn">Turn: Bot</string>
+    <string name="winner">Winner:</string>
+    <string name="bot_winner">Winner: Bot</string>
 
     <string-array name="cards_array">
         <item>2</item>
