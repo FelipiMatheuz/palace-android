@@ -15,7 +15,7 @@ import org.felipimz.palace.util.getGameMode
 import org.felipimz.palace.util.getMatchDate
 import org.felipimz.palace.util.getPlayerPosition
 
-class HistoryAdapter(val historyList: List<History>, val context: Context) :
+class HistoryAdapter(private val historyList: List<History>, val context: Context) :
     RecyclerView.Adapter<HistoryAdapter.HistoryHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryHolder {

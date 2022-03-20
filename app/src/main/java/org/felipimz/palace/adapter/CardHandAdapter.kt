@@ -11,7 +11,7 @@ import org.felipimz.palace.activity.MainActivity
 import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.Position
 
-class CardHandAdapter(var listCard: List<Card>, val orientation: Boolean, val activity: MainActivity) :
+class CardHandAdapter(private var listCard: List<Card>, private val orientation: Boolean, val activity: MainActivity) :
     RecyclerView.Adapter<CardHandAdapter.CardHandHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHandHolder {

@@ -3,7 +3,7 @@ package org.felipimz.palace.util
 import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.WildCardEffect
 
-class CardUtil() {
+class CardUtil {
 
     private val deck: MutableList<Card> = mutableListOf(
         Card("two_of_diamonds", 2, WildCardEffect.RESET),

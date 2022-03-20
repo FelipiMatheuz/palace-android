@@ -1,6 +1,5 @@
 package org.felipimz.palace.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.felipimz.palace.model.Card
