@@ -7,15 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.felipimz.palace.R
 import org.felipimz.palace.adapter.CardHandAdapter
 import org.felipimz.palace.databinding.ActivityMainBinding
 import org.felipimz.palace.model.Card
+import org.felipimz.palace.model.History
 import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
+import org.felipimz.palace.repository.HistoryRepository
 import org.felipimz.palace.repository.PreferencesRepository
 import org.felipimz.palace.viewmodel.MainViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardHandAdapter2: CardHandAdapter
     private lateinit var cardHandAdapter3: CardHandAdapter
     private lateinit var cardHandAdapter4: CardHandAdapter
+
+    var lockActions: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,20 +57,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkWinner(value: MutableList<Card>) {
-        val countPlayer1 = value.filter { card -> card.owner == Owner.PLAYER1 }
-        val countPlayer2 = value.filter { card -> card.owner == Owner.PLAYER2 }
-        val countPlayer3 = value.filter { card -> card.owner == Owner.PLAYER3 }
-        val countPlayer4 = value.filter { card -> card.owner == Owner.PLAYER4 }
+        val countPlayer1 = value.filter { card -> card.owner == Owner.PLAYER1 }.size
+        val countPlayer2 = value.filter { card -> card.owner == Owner.PLAYER2 }.size
+        val countPlayer3 = value.filter { card -> card.owner == Owner.PLAYER3 }.size
+        val countPlayer4 = value.filter { card -> card.owner == Owner.PLAYER4 }.size
 
-        if (countPlayer1.isEmpty()) {
-            displayWinner(1)
-        } else if (countPlayer2.isEmpty()) {
-            displayWinner(2)
-        } else if (countPlayer3.isEmpty()) {
-            displayWinner(3)
-        } else if (countPlayer4.isEmpty()) {
-            displayWinner(4)
+        if (countPlayer1 == 0 || countPlayer2 == 0 || countPlayer3 == 0 || countPlayer4 == 0) {
+            displayWinner(intArrayOf(countPlayer1, countPlayer2, countPlayer3, countPlayer4))
+            lockActions = true
         }
+    }
+
+    private fun recordHistory(sizes: IntArray) {
+        val player1size = sizes[0]
+        sizes.sort()
+        val history = History(
+            sizes.indexOf(player1size) + 1,
+            "single",
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+        )
+        val repository = HistoryRepository(this)
+        repository.setHistoryList(history)
     }
 
     private fun loadGameText() {
@@ -80,19 +94,22 @@ class MainActivity : AppCompatActivity() {
                 1 -> "${getString(R.string.turn)} ${preferencesViewModel.loadNickName()}"
                 else -> "${getString(R.string.bot_turn)}${player}"
             }
+            lockActions = player != 1
             delay(1000)
             binding.messageTable.text = ""
             viewModel.getCard(viewModel.currentTurn)
         }
     }
 
-    private fun displayWinner(player: Int) {
+    private fun displayWinner(sizes: IntArray) {
         viewModel.viewModelScope.launch {
+            val player = sizes.indexOf(0) + 1
             binding.messageTable.text = when (player) {
                 1 -> "${getString(R.string.winner)} ${preferencesViewModel.loadNickName()}"
                 else -> "${getString(R.string.bot_winner)}${player}"
             }
             delay(1000)
+            recordHistory(sizes)
             super.onBackPressed()
             finish()
         }
@@ -215,7 +232,7 @@ class MainActivity : AppCompatActivity() {
                         packageName
                     )
                 )
-                if (adapter.itemCount == 0) {
+                if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         viewModel.addToDiscard(cardUp)
                         displayTurn(viewModel.currentTurn)
@@ -223,7 +240,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: java.lang.Exception) {
                 imageView.setImageResource(preferencesViewModel.loadDeck())
-                if (adapter.itemCount == 0) {
+                if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         val cardDown = card.single { v -> v.position.name.contains("DOWN") }
                         viewModel.addToDiscard(cardDown)

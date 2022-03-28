@@ -40,7 +40,7 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
             null
         }
 
-        if (listCard.isNotEmpty() && listCard[listCard.size - 1].owner == Owner.PLAYER1) {
+        if (listCard.isNotEmpty() && listCard[listCard.size - 1].owner == Owner.PLAYER1 && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
                 if (card.position == Position.HAND_CLICKED) {
                     activity.viewModel.addToDiscard(card)

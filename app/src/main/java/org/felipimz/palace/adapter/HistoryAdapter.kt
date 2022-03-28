@@ -33,10 +33,8 @@ class HistoryAdapter(private val historyList: List<History>, val context: Contex
         holder.tvDate.text = getMatchDate(history.matchDate)
         holder.ivCrownPlace.setColorFilter(
             ContextCompat.getColor(context, getColorRes(history.playerPosition)),
-            android.graphics.PorterDuff.Mode.ADD
+            android.graphics.PorterDuff.Mode.SRC_IN
         )
-        //update adapter
-        notifyItemChanged(position)
     }
 
     override fun getItemCount() = historyList.size

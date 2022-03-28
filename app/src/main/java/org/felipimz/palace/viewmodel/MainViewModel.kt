@@ -20,11 +20,7 @@ class MainViewModel : ViewModel() {
 
     fun distributeCard(deckWithJoker: Boolean) {
         //init deck and shuffle
-        deck.value = if (deckWithJoker) {
-            cardUtil.getDeckWithJoker()
-        } else {
-            cardUtil.getDeckDefault()
-        }
+        deck.value = cardUtil.getDeckDefault(deckWithJoker)
 
         deck.value = deck.value?.shuffled()?.toMutableList()
 
