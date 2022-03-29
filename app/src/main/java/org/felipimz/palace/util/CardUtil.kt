@@ -70,7 +70,7 @@ class CardUtil {
             }
             eights.forEach {
                 val eightWithwildCardEffect = it
-                eightWithwildCardEffect.wildCard = WildCardEffect.RESET
+                eightWithwildCardEffect.wildCard = WildCardEffect.REVERSE
                 deck[deck.indexOf(it)] = eightWithwildCardEffect
             }
         } else {

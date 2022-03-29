@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
-    private lateinit var preferencesViewModel: PreferencesRepository
+    lateinit var preferencesViewModel: PreferencesRepository
 
     private lateinit var cardHandAdapter1: CardHandAdapter
     private lateinit var cardHandAdapter2: CardHandAdapter
@@ -52,6 +52,9 @@ class MainActivity : AppCompatActivity() {
             loadHands(value)
             loadTable(value)
             checkWinner(value)
+            if (lockActions) {
+                viewModel.robotPlay(viewModel.currentTurn, preferencesViewModel.loadWildCardAsSpecial())
+            }
         }
 
     }
@@ -234,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
-                        viewModel.addToDiscard(cardUp)
+                        viewModel.addToDiscard(cardUp, preferencesViewModel.loadWildCardAsSpecial())
                         displayTurn(viewModel.currentTurn)
                     }
                 }
@@ -243,7 +246,7 @@ class MainActivity : AppCompatActivity() {
                 if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         val cardDown = card.single { v -> v.position.name.contains("DOWN") }
-                        viewModel.addToDiscard(cardDown)
+                        viewModel.addToDiscard(cardDown, preferencesViewModel.loadWildCardAsSpecial())
                         displayTurn(viewModel.currentTurn)
                     }
                 }

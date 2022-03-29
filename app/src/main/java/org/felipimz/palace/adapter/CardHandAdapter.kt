@@ -1,5 +1,6 @@
 package org.felipimz.palace.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
         return CardHandHolder(view)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: CardHandHolder, position: Int) {
         val card = listCard[position]
         val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
@@ -43,7 +45,7 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
         if (listCard.isNotEmpty() && listCard[listCard.size - 1].owner == Owner.PLAYER1 && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
                 if (card.position == Position.HAND_CLICKED) {
-                    activity.viewModel.addToDiscard(card)
+                    activity.viewModel.addToDiscard(card, activity.preferencesViewModel.loadWildCardAsSpecial())
                     activity.displayTurn(activity.viewModel.currentTurn)
                 } else {
                     listCard.filter { c ->
