@@ -130,25 +130,31 @@ class MainViewModel : ViewModel() {
         return (ignoreValueWildCards && isWildCard) || isGreaterOrEqualValue
     }
 
-    fun getCard(player: Int) {
+    fun getCard(ignoreValueWildCards: Boolean): Boolean? {
 
         val target = deck.value!!.filter {
             it.owner == Owner.ON_PILE
         }
         if (target.isEmpty())
-            return
+            return null
 
         target[0].position = Position.HAND
-        target[0].owner = when (player) {
+        target[0].owner = when (currentTurn) {
             1 -> Owner.PLAYER1
             2 -> Owner.PLAYER2
             3 -> Owner.PLAYER3
             else -> Owner.PLAYER4
         }
         deck.postValue(deck.value)
+        return if (currentTurn != 1) {
+            robotPlay(currentTurn, ignoreValueWildCards)
+            true
+        } else {
+            false
+        }
     }
 
-    fun robotPlay(player: Int, ignoreValueWildCards: Boolean) {
+    private fun robotPlay(player: Int, ignoreValueWildCards: Boolean) {
         val deckOwner = when (player) {
             2 -> Owner.PLAYER2
             3 -> Owner.PLAYER3

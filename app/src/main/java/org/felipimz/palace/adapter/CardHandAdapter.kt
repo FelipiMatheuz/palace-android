@@ -46,7 +46,7 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
             holder.cvCard.setOnClickListener {
                 if (card.position == Position.HAND_CLICKED) {
                     activity.viewModel.addToDiscard(card, activity.preferencesViewModel.loadWildCardAsSpecial())
-                    activity.displayTurn(activity.viewModel.currentTurn)
+                    activity.displayTurn()
                 } else {
                     listCard.filter { c ->
                         c.position == Position.HAND_CLICKED

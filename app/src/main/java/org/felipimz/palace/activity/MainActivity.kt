@@ -52,9 +52,6 @@ class MainActivity : AppCompatActivity() {
             loadHands(value)
             loadTable(value)
             checkWinner(value)
-            if (lockActions) {
-                viewModel.robotPlay(viewModel.currentTurn, preferencesViewModel.loadWildCardAsSpecial())
-            }
         }
 
     }
@@ -87,20 +84,24 @@ class MainActivity : AppCompatActivity() {
         viewModel.viewModelScope.launch {
             binding.messageTable.text = getString(R.string.game_start)
             delay(1000)
-            displayTurn(viewModel.currentTurn)
+            displayTurn()
         }
     }
 
-    fun displayTurn(player: Int) {
+    fun displayTurn() {
         viewModel.viewModelScope.launch {
-            binding.messageTable.text = when (player) {
+            binding.messageTable.text = when (viewModel.currentTurn) {
                 1 -> "${getString(R.string.turn)} ${preferencesViewModel.loadNickName()}"
-                else -> "${getString(R.string.bot_turn)}${player}"
+                else -> "${getString(R.string.bot_turn)}${viewModel.currentTurn}"
             }
-            lockActions = player != 1
+            lockActions = viewModel.currentTurn != 1
             delay(1000)
             binding.messageTable.text = ""
-            viewModel.getCard(viewModel.currentTurn)
+            val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial())
+
+            if (display == true) {
+                displayTurn()
+            }
         }
     }
 
@@ -238,7 +239,7 @@ class MainActivity : AppCompatActivity() {
                 if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         viewModel.addToDiscard(cardUp, preferencesViewModel.loadWildCardAsSpecial())
-                        displayTurn(viewModel.currentTurn)
+                        displayTurn()
                     }
                 }
             } catch (e: java.lang.Exception) {
@@ -247,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                     imageView.setOnClickListener {
                         val cardDown = card.single { v -> v.position.name.contains("DOWN") }
                         viewModel.addToDiscard(cardDown, preferencesViewModel.loadWildCardAsSpecial())
-                        displayTurn(viewModel.currentTurn)
+                        displayTurn()
                     }
                 }
             }
