@@ -30,5 +30,5 @@ fun getGameMode(context: Context, gamemode: String): String {
 }
 
 fun getMatchDate(matchDate: String): String {
-    return matchDate.substring(matchDate.indexOf(" ")).trim()
+    return matchDate.substring(0, matchDate.indexOf(" ")).trim()
 }

@@ -63,25 +63,24 @@ class CardUtil {
         Card("ace_of_clubs", 14)
     )
 
-    fun getDeckDefault(): MutableList<Card> {
-        val eights = deck.filter { f ->
-            f.name.contains("eight")
+    fun getDeckDefault(hasJoker: Boolean): MutableList<Card> {
+        if (hasJoker) {
+            val eights = deck.filter { f ->
+                f.name.contains("eight")
+            }
+            eights.forEach {
+                val eightWithwildCardEffect = it
+                eightWithwildCardEffect.wildCard = WildCardEffect.REVERSE
+                deck[deck.indexOf(it)] = eightWithwildCardEffect
+            }
+        } else {
+            deck.add(
+                Card("joker", 15, WildCardEffect.REVERSE)
+            )
+            deck.add(
+                Card("joker", 15, WildCardEffect.REVERSE)
+            )
         }
-        eights.forEach {
-            val eightWithwildCardEffect = it
-            eightWithwildCardEffect.wildCard = WildCardEffect.RESET
-            deck[deck.indexOf(it)] = eightWithwildCardEffect
-        }
-        return deck
-    }
-
-    fun getDeckWithJoker(): MutableList<Card> {
-        deck.add(
-            Card("joker", 15, WildCardEffect.REVERSE)
-        )
-        deck.add(
-            Card("joker", 15, WildCardEffect.REVERSE)
-        )
         return deck
     }
 }
