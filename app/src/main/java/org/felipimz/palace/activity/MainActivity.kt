@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardHandAdapter4: CardHandAdapter
 
     var lockActions: Boolean = false
+    var lockBot: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         if (countPlayer1 == 0 || countPlayer2 == 0 || countPlayer3 == 0 || countPlayer4 == 0) {
             displayWinner(intArrayOf(countPlayer1, countPlayer2, countPlayer3, countPlayer4))
             lockActions = true
+            lockBot = true
         }
     }
 
@@ -97,9 +99,9 @@ class MainActivity : AppCompatActivity() {
             lockActions = viewModel.currentTurn != 1
             delay(1000)
             binding.messageTable.text = ""
-            val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial())
+            val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial(), lockBot)
 
-            if (display == true) {
+            if (display) {
                 displayTurn()
             }
         }

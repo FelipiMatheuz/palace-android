@@ -130,24 +130,24 @@ class MainViewModel : ViewModel() {
         return (ignoreValueWildCards && isWildCard) || isGreaterOrEqualValue
     }
 
-    fun getCard(ignoreValueWildCards: Boolean): Boolean? {
+    fun getCard(ignoreValueWildCards: Boolean, lockBot: Boolean): Boolean {
 
         val target = deck.value!!.filter {
             it.owner == Owner.ON_PILE
         }
-        if (target.isEmpty())
-            return null
-
-        target[0].position = Position.HAND
-        target[0].owner = when (currentTurn) {
-            1 -> Owner.PLAYER1
-            2 -> Owner.PLAYER2
-            3 -> Owner.PLAYER3
-            else -> Owner.PLAYER4
+        if (target.isNotEmpty()) {
+            target[0].position = Position.HAND
+            target[0].owner = when (currentTurn) {
+                1 -> Owner.PLAYER1
+                2 -> Owner.PLAYER2
+                3 -> Owner.PLAYER3
+                else -> Owner.PLAYER4
+            }
+            deck.postValue(deck.value)
         }
-        deck.postValue(deck.value)
         return if (currentTurn != 1) {
-            robotPlay(currentTurn, ignoreValueWildCards)
+            if (!lockBot)
+                robotPlay(currentTurn, ignoreValueWildCards)
             true
         } else {
             false
@@ -191,18 +191,22 @@ class MainViewModel : ViewModel() {
                 return if (previousTopDiscardedCard == null) {
                     botTableUp[0]
                 } else {
-                    botTableUp.singleOrNull {
+                    val cardToDiscard = botTableUp.filter {
                         if (previousTopDiscardedCard.wildCard == WildCardEffect.FORCEDOWN) {
                             it.value <= previousTopDiscardedCard.value
                         } else {
                             it.value >= previousTopDiscardedCard.value
                         }
                     }
-                        ?: if (botWildCardTableUp.isNotEmpty()) {
+                    if (cardToDiscard.isNotEmpty()) {
+                        cardToDiscard[0]
+                    } else {
+                        if (botWildCardTableUp.isNotEmpty()) {
                             botWildCardTableUp[0]
                         } else {
                             botTableUp[0]
                         }
+                    }
                 }
             } else {
                 return if (botWildCardTableUp.isNotEmpty()) {
@@ -232,16 +236,28 @@ class MainViewModel : ViewModel() {
                 if (previousTopDiscardedCard == null) {
                     botTableUp[0]
                 } else {
-                    botTableUp.singleOrNull {
+                    val cardToDiscard = botTableUp.filter {
                         if (previousTopDiscardedCard.wildCard == WildCardEffect.FORCEDOWN) {
                             it.value <= previousTopDiscardedCard.value
                         } else {
                             it.value >= previousTopDiscardedCard.value
                         }
-                    } ?: botTableUp[0]
+                    }
+                    if (cardToDiscard.isNotEmpty()) {
+                        cardToDiscard[0]
+                    } else {
+                        botTableUp[0]
+                    }
                 }
             } else {
-                null
+                val botTableDown = deck.value!!.filter {
+                    it.owner == deckOwner && it.position.name.contains("DOWN")
+                }.toMutableList()
+                if (botTableDown.isNotEmpty()) {
+                    botTableDown.random()
+                } else {
+                    null
+                }
             }
         }
     }
@@ -263,18 +279,22 @@ class MainViewModel : ViewModel() {
                 return if (previousTopDiscardedCard == null) {
                     botHand[0]
                 } else {
-                    botHand.singleOrNull {
+                    val cardToDiscard = botHand.filter {
                         if (previousTopDiscardedCard.wildCard == WildCardEffect.FORCEDOWN) {
                             it.value <= previousTopDiscardedCard.value
                         } else {
                             it.value >= previousTopDiscardedCard.value
                         }
                     }
-                        ?: if (botWildCardHand.isNotEmpty()) {
+                    if (cardToDiscard.isNotEmpty()) {
+                        cardToDiscard[0]
+                    } else {
+                        if (botWildCardHand.isNotEmpty()) {
                             botWildCardHand[0]
                         } else {
                             botHand[0]
                         }
+                    }
                 }
             } else {
                 return if (botWildCardHand.isNotEmpty()) {
@@ -297,13 +317,18 @@ class MainViewModel : ViewModel() {
                 if (previousTopDiscardedCard == null) {
                     botHand[0]
                 } else {
-                    botHand.singleOrNull {
+                    val cardToDiscard = botHand.filter {
                         if (previousTopDiscardedCard.wildCard == WildCardEffect.FORCEDOWN) {
                             it.value <= previousTopDiscardedCard.value
                         } else {
                             it.value >= previousTopDiscardedCard.value
                         }
-                    } ?: botHand[0]
+                    }
+                    if (cardToDiscard.isNotEmpty()) {
+                        cardToDiscard[0]
+                    } else {
+                        botHand[0]
+                    }
                 }
             } else {
                 null
