@@ -49,23 +49,34 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
 
         if (listCard.isNotEmpty() && card.owner == Owner.PLAYER1 && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
-                if (card.position == Position.HAND_CLICKED) {
-                    val listClicked = listCard.filter { c ->
-                        c.position == Position.HAND_CLICKED
+                if (activity.isSetupCards) {
+                    if (card.position == Position.HAND_CLICKED) {
+                        card.position = Position.HAND
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { it.position = Position.HAND }
+
+                        card.position = Position.HAND_CLICKED
                     }
-                    activity.viewModel.addToDiscard(listClicked, activity.preferencesViewModel.loadWildCardAsSpecial())
-                    activity.displayTurn()
                 } else {
-                    listCard.filter { c ->
-                        c.position == Position.HAND_CLICKED
-                    }.forEach { c ->
-                        if (c.value != card.value) {
-                            c.position = Position.HAND
+                    if (card.position == Position.HAND_CLICKED) {
+                        val listClicked = listCard.filter { c ->
+                            c.position == Position.HAND_CLICKED
                         }
+                        activity.viewModel.addToDiscard(
+                            listClicked,
+                            activity.preferencesViewModel.loadWildCardAsSpecial()
+                        )
+                        activity.displayTurn()
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { c ->
+                            if (c.value != card.value) {
+                                c.position = Position.HAND
+                            }
+                        }
+                        card.position = Position.HAND_CLICKED
                     }
-                    card.position = Position.HAND_CLICKED
-                    notifyDataSetChanged()
                 }
+                notifyDataSetChanged()
             }
             holder.cvCard.setOnLongClickListener {
                 Toast.makeText(activity, card.name.replace("_", " "), Toast.LENGTH_SHORT).show()

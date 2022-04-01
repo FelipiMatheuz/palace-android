@@ -428,4 +428,17 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    fun changeHand(card: Card) {
+        val target = deck.value!!.single {
+            it == card
+        }
+        val cardHandClicked = deck.value!!.singleOrNull { it.position == Position.HAND_CLICKED }
+
+        if (cardHandClicked != null) {
+            cardHandClicked.position = target.position
+            target.position = Position.HAND
+            deck.postValue(deck.value)
+        }
+    }
 }
