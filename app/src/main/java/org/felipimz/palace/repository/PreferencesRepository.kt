@@ -17,6 +17,7 @@ class PreferencesRepository(context: Context) : ViewModel() {
             preferencesFile.getString("nickname", "")!!,
             preferencesFile.getBoolean("deckWithJoker", false),
             preferencesFile.getBoolean("wildcardAsSpecial", false),
+            preferencesFile.getBoolean("doubleDeck", false),
             preferencesFile.getString("rules", "default")!!,
             preferencesFile.getString("card", "blue")!!
         )
@@ -49,5 +50,9 @@ class PreferencesRepository(context: Context) : ViewModel() {
 
     fun loadCard(): String {
         return preferences.card
+    }
+
+    fun loadDoubleDeck(): Boolean {
+        return preferences.doubleDeck
     }
 }

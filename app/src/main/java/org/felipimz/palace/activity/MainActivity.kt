@@ -45,7 +45,11 @@ class MainActivity : AppCompatActivity() {
         preferencesViewModel = PreferencesRepository(this)
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
-        viewModel.distributeCard(preferencesViewModel.loadDeckWithJoker(), preferencesViewModel.loadRules())
+        viewModel.distributeCard(
+            preferencesViewModel.loadDeckWithJoker(),
+            preferencesViewModel.loadRules(),
+            preferencesViewModel.loadDoubleDeck()
+        )
 
         loadGameText()
         viewModel.deck.observe(this) { value: MutableList<Card> ->
