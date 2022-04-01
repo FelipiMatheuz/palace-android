@@ -78,44 +78,44 @@ class MainViewModel : ViewModel() {
         var burned = false
 
         val listTarget = deck.value!!.filter {
-           listCard.contains(it)
+            listCard.contains(it)
         }
-            val previousTopDiscardedCard = deck.value!!.singleOrNull {
-                it.position == Position.ON_TOP
+        val previousTopDiscardedCard = deck.value!!.singleOrNull {
+            it.position == Position.ON_TOP
+        }
+
+        if (validateDiscard(listTarget[0], previousTopDiscardedCard, ignoreValueWildCards)) {
+            previousTopDiscardedCard?.position = Position.NONE
+            listTarget.forEach { target ->
+                target.position = Position.NONE
+                target.owner = Owner.DISCARDED
             }
+            listTarget[0].position = Position.ON_TOP
 
-            if (validateDiscard(listTarget[0], previousTopDiscardedCard, ignoreValueWildCards)) {
-                previousTopDiscardedCard?.position = Position.NONE
-                listTarget.forEach{ target ->
-                    target.position = Position.NONE
-                    target.owner = Owner.DISCARDED
+            if (listTarget[0].wildCard == WildCardEffect.REVERSE) {
+                reverse = !reverse
+            } else if (listTarget[0].wildCard == WildCardEffect.BURNPILE) {
+                addToBurn()
+                burned = true
+            } else {
+                if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
+                    additionalInfo["discarded_top_value"] to listTarget[0].value
+                    additionalInfo["discarded_top_times"] to 1
+                } else {
+                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
                 }
-                listTarget[0].position = Position.ON_TOP
 
-                if (listTarget[0].wildCard == WildCardEffect.REVERSE) {
-                    reverse = !reverse
-                } else if (listTarget[0].wildCard == WildCardEffect.BURNPILE) {
+                if (additionalInfo["discarded_top_times"]!! >= 4) {
                     addToBurn()
                     burned = true
-                } else {
-                    if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
-                        additionalInfo["discarded_top_value"] to listTarget[0].value
-                        additionalInfo["discarded_top_times"] to 1
-                    } else {
-                        additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
-                    }
-
-                    if (additionalInfo["discarded_top_times"]!! >= 4) {
-                        addToBurn()
-                        burned = true
-                    }
-                }
-
-            } else {
-                listTarget.forEach { target ->
-                    backToHand(target)
                 }
             }
+
+        } else {
+            listTarget.forEach { target ->
+                backToHand(target)
+            }
+        }
 
         deck.postValue(deck.value)
 
@@ -209,10 +209,15 @@ class MainViewModel : ViewModel() {
 
     private fun validateDiscard(target: Card, previous: Card?, ignoreValueWildCards: Boolean): Boolean {
         val isWildCard = target.wildCard != WildCardEffect.NONE
-        val isGreaterOrEqualValue =
-            previous == null || previous.wildCard == WildCardEffect.RESET || target.value >= previous.value
+        val isValidValueToDiscard =
+            previous == null || previous.wildCard == WildCardEffect.RESET ||
+                    if (previous.wildCard == WildCardEffect.FORCEDOWN) {
+                        target.value <= previous.value
+                    } else {
+                        target.value >= previous.value
+                    }
 
-        return (ignoreValueWildCards && isWildCard) || isGreaterOrEqualValue
+        return (ignoreValueWildCards && isWildCard) || isValidValueToDiscard
     }
 
     fun getCard(ignoreValueWildCards: Boolean, lockBot: Boolean): Boolean {
@@ -230,9 +235,8 @@ class MainViewModel : ViewModel() {
             }
             deck.postValue(deck.value)
         }
-        return if (currentTurn != 1) {
-            if (!lockBot)
-                robotPlay(currentTurn, ignoreValueWildCards)
+        return if (currentTurn != 1 && !lockBot) {
+            robotPlay(currentTurn, ignoreValueWildCards)
             true
         } else {
             false
