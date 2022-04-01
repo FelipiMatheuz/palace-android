@@ -68,8 +68,8 @@ class CardUtil {
         "discarded_top_times" to 0
     )
 
-    fun getDeckDefault(hasJoker: Boolean): MutableList<Card> {
-        if (hasJoker) {
+    fun getDefaultDeck(hasJoker: Boolean): MutableList<Card> {
+        if (!hasJoker) {
             val eights = deck.filter { f ->
                 f.name.contains("eight")
             }
@@ -85,6 +85,38 @@ class CardUtil {
             deck.add(
                 Card("joker", 15, WildCardEffect.REVERSE)
             )
+        }
+        return deck
+    }
+
+    fun getCustomDeck(hasJoker: Boolean, rules: List<String>): MutableList<Card> {
+        deck.forEach {
+            it.wildCard = WildCardEffect.NONE
+        }
+
+        if (hasJoker) {
+            deck.add(
+                Card("joker", 15, WildCardEffect.NONE)
+            )
+            deck.add(
+                Card("joker", 15, WildCardEffect.NONE)
+            )
+        }
+
+        for (i in 0..3) {
+            val valueCard = deck.filter { it.value == rules[i].toInt() }
+            val wildCardEffect = when (i) {
+                0 -> WildCardEffect.BURNPILE
+                1 -> WildCardEffect.RESET
+                2 -> WildCardEffect.FORCEDOWN
+                3 -> WildCardEffect.REVERSE
+                else -> WildCardEffect.NONE
+            }
+            valueCard.forEach {
+                val wildCard = it
+                wildCard.wildCard = wildCardEffect
+                deck[deck.indexOf(it)] = wildCard
+            }
         }
         return deck
     }

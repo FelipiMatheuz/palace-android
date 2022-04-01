@@ -22,9 +22,13 @@ class MainViewModel : ViewModel() {
         additionalInfo = cardUtil.loadAdditionalInfo()
     }
 
-    fun distributeCard(deckWithJoker: Boolean) {
+    fun distributeCard(deckWithJoker: Boolean, rules: String) {
         //init deck and shuffle
-        deck.value = cardUtil.getDeckDefault(deckWithJoker)
+        deck.value = if (rules == "default") {
+            cardUtil.getDefaultDeck(deckWithJoker)
+        } else {
+            cardUtil.getCustomDeck(deckWithJoker, rules.split(";"))
+        }
 
         deck.value = deck.value?.shuffled()?.toMutableList()
 
