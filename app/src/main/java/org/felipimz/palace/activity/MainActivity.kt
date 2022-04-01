@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardHandAdapter4: CardHandAdapter
 
     var lockActions: Boolean = false
-    var lockBot: Boolean = false
+    private var lockBot: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,22 +150,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadHands(value: MutableList<Card>) {
         cardHandAdapter1 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
         cardHandAdapter2 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
         cardHandAdapter3 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
             false,
             this
         )
         cardHandAdapter4 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
             false,
             this
         )

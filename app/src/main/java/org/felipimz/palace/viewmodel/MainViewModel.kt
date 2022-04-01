@@ -73,6 +73,57 @@ class MainViewModel : ViewModel() {
         return index + 6
     }
 
+    fun addToDiscard(listCard: List<Card>, ignoreValueWildCards: Boolean) {
+
+        var burned = false
+
+        val listTarget = deck.value!!.filter {
+           listCard.contains(it)
+        }
+            val previousTopDiscardedCard = deck.value!!.singleOrNull {
+                it.position == Position.ON_TOP
+            }
+
+            if (validateDiscard(listTarget[0], previousTopDiscardedCard, ignoreValueWildCards)) {
+                previousTopDiscardedCard?.position = Position.NONE
+                listTarget.forEach{ target ->
+                    target.position = Position.NONE
+                    target.owner = Owner.DISCARDED
+                }
+                listTarget[0].position = Position.ON_TOP
+
+                if (listTarget[0].wildCard == WildCardEffect.REVERSE) {
+                    reverse = !reverse
+                } else if (listTarget[0].wildCard == WildCardEffect.BURNPILE) {
+                    addToBurn()
+                    burned = true
+                } else {
+                    if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
+                        additionalInfo["discarded_top_value"] to listTarget[0].value
+                        additionalInfo["discarded_top_times"] to 1
+                    } else {
+                        additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
+                    }
+
+                    if (additionalInfo["discarded_top_times"]!! >= 4) {
+                        addToBurn()
+                        burned = true
+                    }
+                }
+
+            } else {
+                listTarget.forEach { target ->
+                    backToHand(target)
+                }
+            }
+
+        deck.postValue(deck.value)
+
+        if (!burned) {
+            changeTurn()
+        }
+    }
+
     fun addToDiscard(card: Card, ignoreValueWildCards: Boolean) {
         val target = deck.value!!.single {
             it == card
