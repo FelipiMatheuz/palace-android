@@ -8,6 +8,8 @@ import org.felipimz.palace.adapter.HistoryAdapter
 import org.felipimz.palace.databinding.ActivityHistoryBinding
 import org.felipimz.palace.repository.HistoryRepository
 import org.felipimz.palace.repository.PreferencesRepository
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -32,7 +34,14 @@ class HistoryActivity : AppCompatActivity() {
             }.size
         } ${resources.getString(R.string.wins)}"
 
-        historyAdapter = HistoryAdapter(viewModel.getHistoryList(), this)
+        historyAdapter = HistoryAdapter(
+            viewModel.getHistoryList().sortedByDescending {
+                LocalDateTime.parse(
+                    it.matchDate,
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+                )
+            }, this
+        )
 
         binding.rvHistory.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

@@ -52,6 +52,7 @@ class SettingsActivity : AppCompatActivity() {
                     binding.etNickname.toString(),
                     binding.tbUseJoker.isChecked,
                     binding.cbWildcardSpecial.isChecked,
+                    binding.cbDoubleDeck.isChecked,
                     rules,
                     binding.spDeck.selectedItem.toString()
                 )
@@ -59,6 +60,7 @@ class SettingsActivity : AppCompatActivity() {
                 val editor = preferences.edit()
                 editor.putString("nickname", binding.etNickname.text.toString())
                 editor.putBoolean("deckWithJoker", binding.tbUseJoker.isChecked)
+                editor.putBoolean("doubleDeck", binding.cbDoubleDeck.isChecked)
                 editor.putBoolean("wildcardAsSpecial", binding.cbWildcardSpecial.isChecked)
                 editor.putString("card", binding.spDeck.selectedItem.toString())
                 editor.putString("rules", rules)
@@ -116,6 +118,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun initToogleButton() {
         binding.cbWildcardSpecial.isChecked = preferencesViewModel.loadWildCardAsSpecial()
+        binding.cbDoubleDeck.isChecked = preferencesViewModel.loadDoubleDeck()
         binding.tbUseJoker.isChecked = preferencesViewModel.loadDeckWithJoker()
         checkToogleButton(binding.tbUseJoker, binding.tbUseJoker.isChecked)
         binding.tbUseJoker.setOnCheckedChangeListener { button, isChecked ->

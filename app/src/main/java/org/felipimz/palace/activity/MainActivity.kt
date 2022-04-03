@@ -1,6 +1,7 @@
 package org.felipimz.palace.activity
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +35,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardHandAdapter4: CardHandAdapter
 
     var lockActions: Boolean = false
-    var lockBot: Boolean = false
+    var isSetupCards: Boolean = true
+    private var lockBot: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +47,13 @@ class MainActivity : AppCompatActivity() {
         preferencesViewModel = PreferencesRepository(this)
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
-        viewModel.distributeCard(preferencesViewModel.loadDeckWithJoker())
+        viewModel.distributeCard(
+            preferencesViewModel.loadDeckWithJoker(),
+            preferencesViewModel.loadRules(),
+            preferencesViewModel.loadDoubleDeck()
+        )
 
-        loadGameText()
+        loadGameSetup()
         viewModel.deck.observe(this) { value: MutableList<Card> ->
             loadPiles(value)
             loadHands(value)
@@ -82,11 +88,19 @@ class MainActivity : AppCompatActivity() {
         repository.setHistoryList(history)
     }
 
-    private fun loadGameText() {
+    private fun loadGameSetup() {
         viewModel.viewModelScope.launch {
             binding.messageTable.text = getString(R.string.game_start)
-            delay(1000)
-            displayTurn()
+            delay(1500)
+            binding.messageTable.text = getString(R.string.choose_your_cards)
+            delay(1500)
+            binding.messageTable.text = ""
+            binding.confirmSetup.visibility = View.VISIBLE
+            binding.confirmSetup.setOnClickListener {
+                it.visibility = View.GONE
+                isSetupCards = false
+                displayTurn()
+            }
         }
     }
 
@@ -97,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                 else -> "${getString(R.string.bot_turn)}${viewModel.currentTurn}"
             }
             lockActions = viewModel.currentTurn != 1
-            delay(1000)
+            delay(1500)
             binding.messageTable.text = ""
             val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial(), lockBot)
 
@@ -114,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 1 -> "${getString(R.string.winner)} ${preferencesViewModel.loadNickName()}"
                 else -> "${getString(R.string.bot_winner)}${player}"
             }
-            delay(1000)
+            delay(1500)
             recordHistory(sizes)
             super.onBackPressed()
             finish()
@@ -150,22 +164,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadHands(value: MutableList<Card>) {
         cardHandAdapter1 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
         cardHandAdapter2 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
         cardHandAdapter3 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
             false,
             this
         )
         cardHandAdapter4 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") },
+            value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
             false,
             this
         )
@@ -238,10 +252,16 @@ class MainActivity : AppCompatActivity() {
                         packageName
                     )
                 )
-                if (adapter.itemCount == 0 && !lockActions) {
-                    imageView.setOnClickListener {
-                        viewModel.addToDiscard(cardUp, preferencesViewModel.loadWildCardAsSpecial())
-                        displayTurn()
+                if (!lockActions) {
+                    if (isSetupCards) {
+                        imageView.setOnClickListener {
+                            viewModel.changeHand(cardUp)
+                        }
+                    } else if (adapter.itemCount == 0) {
+                        imageView.setOnClickListener {
+                            viewModel.addToDiscard(cardUp, preferencesViewModel.loadWildCardAsSpecial())
+                            displayTurn()
+                        }
                     }
                 }
             } catch (e: java.lang.Exception) {

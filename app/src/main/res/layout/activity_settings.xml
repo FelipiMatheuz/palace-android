@@ -255,4 +255,14 @@
             app:layout_constraintTop_toTopOf="@+id/tv_rules"
             app:layout_constraintBottom_toBottomOf="@+id/tv_rules"
             android:layout_marginStart="8dp"/>
+
+    <CheckBox
+            android:text="@string/settings_double_deck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cb_double_deck"
+            app:layout_constraintStart_toEndOf="@+id/tb_use_joker"
+            app:layout_constraintTop_toTopOf="@+id/tv_deck"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_deck"
+            android:layout_marginStart="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

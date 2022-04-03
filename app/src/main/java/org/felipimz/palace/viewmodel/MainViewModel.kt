@@ -14,15 +14,21 @@ class MainViewModel : ViewModel() {
     val deck = MutableLiveData<MutableList<Card>>()
     private val cardUtil = CardUtil()
     var currentTurn: Int = 1
+    private val additionalInfo: Map<String, Int>
     private var reverse: Boolean = false
 
     init {
         deck.value = mutableListOf()
+        additionalInfo = cardUtil.loadAdditionalInfo()
     }
 
-    fun distributeCard(deckWithJoker: Boolean) {
+    fun distributeCard(deckWithJoker: Boolean, rules: String, doubleDeck: Boolean) {
         //init deck and shuffle
-        deck.value = cardUtil.getDeckDefault(deckWithJoker)
+        deck.value = if (rules == "default") {
+            cardUtil.getDefaultDeck(deckWithJoker, doubleDeck)
+        } else {
+            cardUtil.getCustomDeck(deckWithJoker, rules.split(";"), doubleDeck)
+        }
 
         deck.value = deck.value?.shuffled()?.toMutableList()
 
@@ -71,6 +77,57 @@ class MainViewModel : ViewModel() {
         return index + 6
     }
 
+    fun addToDiscard(listCard: List<Card>, ignoreValueWildCards: Boolean) {
+
+        var burned = false
+
+        val listTarget = deck.value!!.filter {
+            listCard.contains(it)
+        }
+        val previousTopDiscardedCard = deck.value!!.singleOrNull {
+            it.position == Position.ON_TOP
+        }
+
+        if (validateDiscard(listTarget[0], previousTopDiscardedCard, ignoreValueWildCards)) {
+            previousTopDiscardedCard?.position = Position.NONE
+            listTarget.forEach { target ->
+                target.position = Position.NONE
+                target.owner = Owner.DISCARDED
+            }
+            listTarget[0].position = Position.ON_TOP
+
+            if (listTarget[0].wildCard == WildCardEffect.REVERSE) {
+                reverse = !reverse
+            } else if (listTarget[0].wildCard == WildCardEffect.BURNPILE) {
+                addToBurn()
+                burned = true
+            } else {
+                if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
+                    additionalInfo["discarded_top_value"] to listTarget[0].value
+                    additionalInfo["discarded_top_times"] to 1
+                } else {
+                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
+                }
+
+                if (additionalInfo["discarded_top_times"]!! >= 4) {
+                    addToBurn()
+                    burned = true
+                }
+            }
+
+        } else {
+            listTarget.forEach { target ->
+                backToHand(target)
+            }
+        }
+
+        deck.postValue(deck.value)
+
+        if (!burned) {
+            changeTurn()
+        }
+    }
+
     fun addToDiscard(card: Card, ignoreValueWildCards: Boolean) {
         val target = deck.value!!.single {
             it == card
@@ -78,6 +135,8 @@ class MainViewModel : ViewModel() {
         val previousTopDiscardedCard = deck.value!!.singleOrNull {
             it.position == Position.ON_TOP
         }
+
+        var burned = false
 
         if (validateDiscard(target, previousTopDiscardedCard, ignoreValueWildCards)) {
             previousTopDiscardedCard?.position = Position.NONE
@@ -87,26 +146,33 @@ class MainViewModel : ViewModel() {
             if (target.wildCard == WildCardEffect.REVERSE) {
                 reverse = !reverse
             } else if (target.wildCard == WildCardEffect.BURNPILE) {
-                deck.value!!.forEach {
-                    if (it.owner == Owner.DISCARDED) {
-                        it.owner = Owner.BURNED
-                        it.position = Position.NONE
-                    }
+                addToBurn()
+                burned = true
+            } else {
+                if (additionalInfo["discarded_top_value"] != target.value) {
+                    additionalInfo["discarded_top_value"] to target.value
+                    additionalInfo["discarded_top_times"] to 1
+                } else {
+                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(1)
+                }
+
+                if (additionalInfo["discarded_top_times"]!! >= 4) {
+                    addToBurn()
+                    burned = true
                 }
             }
 
         } else {
-            target.position = Position.HAND
-            deck.value!!.forEach {
-                if (it.owner == Owner.DISCARDED) {
-                    it.owner = target.owner
-                    it.position = Position.HAND
-                }
-            }
+            backToHand(target)
         }
-
         deck.postValue(deck.value)
 
+        if (!burned) {
+            changeTurn()
+        }
+    }
+
+    private fun changeTurn() {
         if (reverse) {
             if (currentTurn == 1) {
                 currentTurn = 4
@@ -122,12 +188,40 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private fun backToHand(target: Card) {
+        target.position = Position.HAND
+        deck.value!!.forEach {
+            if (it.owner == Owner.DISCARDED) {
+                it.owner = target.owner
+                it.position = Position.HAND
+            }
+        }
+        additionalInfo["discarded_top_value"] to 0
+        additionalInfo["discarded_top_times"] to 0
+    }
+
+    private fun addToBurn() {
+        deck.value!!.forEach {
+            if (it.owner == Owner.DISCARDED) {
+                it.owner = Owner.BURNED
+                it.position = Position.NONE
+            }
+        }
+        additionalInfo["discarded_top_value"] to 0
+        additionalInfo["discarded_top_times"] to 0
+    }
+
     private fun validateDiscard(target: Card, previous: Card?, ignoreValueWildCards: Boolean): Boolean {
         val isWildCard = target.wildCard != WildCardEffect.NONE
-        val isGreaterOrEqualValue =
-            previous == null || previous.wildCard == WildCardEffect.RESET || target.value >= previous.value
+        val isValidValueToDiscard =
+            previous == null || previous.wildCard == WildCardEffect.RESET ||
+                    if (previous.wildCard == WildCardEffect.FORCEDOWN) {
+                        target.value <= previous.value
+                    } else {
+                        target.value >= previous.value
+                    }
 
-        return (ignoreValueWildCards && isWildCard) || isGreaterOrEqualValue
+        return (ignoreValueWildCards && isWildCard) || isValidValueToDiscard
     }
 
     fun getCard(ignoreValueWildCards: Boolean, lockBot: Boolean): Boolean {
@@ -145,9 +239,8 @@ class MainViewModel : ViewModel() {
             }
             deck.postValue(deck.value)
         }
-        return if (currentTurn != 1) {
-            if (!lockBot)
-                robotPlay(currentTurn, ignoreValueWildCards)
+        return if (currentTurn != 1 && !lockBot) {
+            robotPlay(currentTurn, ignoreValueWildCards)
             true
         } else {
             false
@@ -333,6 +426,19 @@ class MainViewModel : ViewModel() {
             } else {
                 null
             }
+        }
+    }
+
+    fun changeHand(card: Card) {
+        val target = deck.value!!.single {
+            it == card
+        }
+        val cardHandClicked = deck.value!!.singleOrNull { it.position == Position.HAND_CLICKED }
+
+        if (cardHandClicked != null) {
+            cardHandClicked.position = target.position
+            target.position = Position.HAND
+            deck.postValue(deck.value)
         }
     }
 }

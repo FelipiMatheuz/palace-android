@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import org.felipimz.palace.R
@@ -34,28 +35,52 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: CardHandHolder, position: Int) {
         val card = listCard[position]
-        val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
-        holder.ivCardItem.setImageResource(resId)
+        if (card.owner == Owner.PLAYER1) {
+            val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
+            holder.ivCardItem.setImageResource(resId)
+        } else {
+            holder.ivCardItem.setImageResource(activity.preferencesViewModel.loadDeck())
+        }
         holder.cvCard.foreground = if (card.position == Position.HAND_CLICKED) {
             activity.getDrawable(R.drawable.highlight)
         } else {
             null
         }
 
-        if (listCard.isNotEmpty() && listCard[listCard.size - 1].owner == Owner.PLAYER1 && !activity.lockActions) {
+        if (listCard.isNotEmpty() && card.owner == Owner.PLAYER1 && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
-                if (card.position == Position.HAND_CLICKED) {
-                    activity.viewModel.addToDiscard(card, activity.preferencesViewModel.loadWildCardAsSpecial())
-                    activity.displayTurn()
-                } else {
-                    listCard.filter { c ->
-                        c.position == Position.HAND_CLICKED
-                    }.forEach { c ->
-                        c.position = Position.HAND
+                if (activity.isSetupCards) {
+                    if (card.position == Position.HAND_CLICKED) {
+                        card.position = Position.HAND
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { it.position = Position.HAND }
+
+                        card.position = Position.HAND_CLICKED
                     }
-                    card.position = Position.HAND_CLICKED
-                    notifyDataSetChanged()
+                } else {
+                    if (card.position == Position.HAND_CLICKED) {
+                        val listClicked = listCard.filter { c ->
+                            c.position == Position.HAND_CLICKED
+                        }
+                        activity.viewModel.addToDiscard(
+                            listClicked,
+                            activity.preferencesViewModel.loadWildCardAsSpecial()
+                        )
+                        activity.displayTurn()
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { c ->
+                            if (c.value != card.value) {
+                                c.position = Position.HAND
+                            }
+                        }
+                        card.position = Position.HAND_CLICKED
+                    }
                 }
+                notifyDataSetChanged()
+            }
+            holder.cvCard.setOnLongClickListener {
+                Toast.makeText(activity, card.name.replace("_", " "), Toast.LENGTH_SHORT).show()
+                true
             }
         }
     }

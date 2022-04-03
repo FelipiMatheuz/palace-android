@@ -35,6 +35,9 @@
     <string name="bot_turn">Turn: Bot</string>
     <string name="winner">Winner:</string>
     <string name="bot_winner">Winner: Bot</string>
+    <string name="settings_double_deck">Double Deck</string>
+    <string name="confirm_choice">Confirm choice</string>
+    <string name="choose_your_cards">Choose your cards</string>
 
     <string-array name="cards_array">
         <item>2</item>

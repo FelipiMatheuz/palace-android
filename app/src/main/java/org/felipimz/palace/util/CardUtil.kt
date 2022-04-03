@@ -63,8 +63,13 @@ class CardUtil {
         Card("ace_of_clubs", 14)
     )
 
-    fun getDeckDefault(hasJoker: Boolean): MutableList<Card> {
-        if (hasJoker) {
+    private val additionalInfo: Map<String, Int> = mapOf(
+        "discarded_top_value" to 0,
+        "discarded_top_times" to 0
+    )
+
+    fun getDefaultDeck(hasJoker: Boolean, doubleDeck: Boolean): MutableList<Card> {
+        if (!hasJoker) {
             val eights = deck.filter { f ->
                 f.name.contains("eight")
             }
@@ -81,6 +86,56 @@ class CardUtil {
                 Card("joker", 15, WildCardEffect.REVERSE)
             )
         }
+        //duplicate deck
+        if (doubleDeck) {
+            val deckCopy = deck.toMutableList()
+            deckCopy.forEach {
+                deck.add(it.copy())
+            }
+        }
         return deck
+    }
+
+    fun getCustomDeck(hasJoker: Boolean, rules: List<String>, doubleDeck: Boolean): MutableList<Card> {
+        deck.forEach {
+            it.wildCard = WildCardEffect.NONE
+        }
+
+        if (hasJoker) {
+            deck.add(
+                Card("joker", 15, WildCardEffect.NONE)
+            )
+            deck.add(
+                Card("joker", 15, WildCardEffect.NONE)
+            )
+        }
+
+        for (i in 0..3) {
+            val valueCard = deck.filter { it.value == rules[i].toInt() }
+            val wildCardEffect = when (i) {
+                0 -> WildCardEffect.BURNPILE
+                1 -> WildCardEffect.RESET
+                2 -> WildCardEffect.FORCEDOWN
+                3 -> WildCardEffect.REVERSE
+                else -> WildCardEffect.NONE
+            }
+            valueCard.forEach {
+                val wildCard = it
+                wildCard.wildCard = wildCardEffect
+                deck[deck.indexOf(it)] = wildCard
+            }
+        }
+        //duplicate deck
+        if (doubleDeck) {
+            val deckCopy = deck.toMutableList()
+            deckCopy.forEach {
+                deck.add(it.copy())
+            }
+        }
+        return deck
+    }
+
+    fun loadAdditionalInfo(): Map<String, Int> {
+        return additionalInfo
     }
 }
