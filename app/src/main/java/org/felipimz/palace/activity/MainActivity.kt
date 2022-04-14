@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else if (adapter.itemCount == 0) {
                         imageView.setOnClickListener {
-                            viewModel.addToDiscard(cardUp, preferencesViewModel.loadWildCardAsSpecial())
+                            viewModel.addToDiscard(listOf(cardUp), preferencesViewModel.loadWildCardAsSpecial())
                             displayTurn()
                         }
                     }
@@ -269,7 +269,7 @@ class MainActivity : AppCompatActivity() {
                 if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         val cardDown = card.single { v -> v.position.name.contains("DOWN") }
-                        viewModel.addToDiscard(cardDown, preferencesViewModel.loadWildCardAsSpecial())
+                        viewModel.addToDiscard(listOf(cardDown), preferencesViewModel.loadWildCardAsSpecial())
                         displayTurn()
                     }
                 }

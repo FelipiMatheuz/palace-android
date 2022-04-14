@@ -111,7 +111,6 @@ class MainViewModel : ViewModel() {
 
                 if (additionalInfo["discarded_top_times"]!! >= 4) {
                     addToBurn()
-                    burned = true
                 }
             }
 
@@ -121,50 +120,6 @@ class MainViewModel : ViewModel() {
             }
         }
 
-        deck.postValue(deck.value)
-
-        if (!burned) {
-            changeTurn()
-        }
-    }
-
-    fun addToDiscard(card: Card, ignoreValueWildCards: Boolean) {
-        val target = deck.value!!.single {
-            it == card
-        }
-        val previousTopDiscardedCard = deck.value!!.singleOrNull {
-            it.position == Position.ON_TOP
-        }
-
-        var burned = false
-
-        if (validateDiscard(target, previousTopDiscardedCard, ignoreValueWildCards)) {
-            previousTopDiscardedCard?.position = Position.NONE
-            target.position = Position.ON_TOP
-            target.owner = Owner.DISCARDED
-
-            if (target.wildCard == WildCardEffect.REVERSE) {
-                reverse = !reverse
-            } else if (target.wildCard == WildCardEffect.BURNPILE) {
-                addToBurn()
-                burned = true
-            } else {
-                if (additionalInfo["discarded_top_value"] != target.value) {
-                    additionalInfo["discarded_top_value"] to target.value
-                    additionalInfo["discarded_top_times"] to 1
-                } else {
-                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(1)
-                }
-
-                if (additionalInfo["discarded_top_times"]!! >= 4) {
-                    addToBurn()
-                    burned = true
-                }
-            }
-
-        } else {
-            backToHand(target)
-        }
         deck.postValue(deck.value)
 
         if (!burned) {
@@ -257,11 +212,11 @@ class MainViewModel : ViewModel() {
         if (deckOwner != null) {
             val handToDiscard = robotCheckHand(deckOwner, ignoreValueWildCards)
             if (handToDiscard != null) {
-                addToDiscard(handToDiscard, ignoreValueWildCards)
+                addToDiscard(listOf(handToDiscard), ignoreValueWildCards)
             } else {
                 val tableToDiscard = robotCheckTable(deckOwner, ignoreValueWildCards)
                 if (tableToDiscard != null) {
-                    addToDiscard(tableToDiscard, ignoreValueWildCards)
+                    addToDiscard(listOf(tableToDiscard), ignoreValueWildCards)
                 }
             }
         }

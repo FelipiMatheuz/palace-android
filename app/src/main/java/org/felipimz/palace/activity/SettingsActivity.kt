@@ -23,7 +23,7 @@ class SettingsActivity : AppCompatActivity() {
 
         preferencesViewModel = PreferencesRepository(this)
         binding.etNickname.setText(preferencesViewModel.loadNickName())
-        initToogleButton()
+        initToggleButton()
         initDeck()
         initRadioRules()
         initButtons()
@@ -116,17 +116,17 @@ class SettingsActivity : AppCompatActivity() {
         binding.spDeck.setSelection(deckAdapter.getPosition(preferencesViewModel.loadCard()))
     }
 
-    private fun initToogleButton() {
+    private fun initToggleButton() {
         binding.cbWildcardSpecial.isChecked = preferencesViewModel.loadWildCardAsSpecial()
         binding.cbDoubleDeck.isChecked = preferencesViewModel.loadDoubleDeck()
         binding.tbUseJoker.isChecked = preferencesViewModel.loadDeckWithJoker()
-        checkToogleButton(binding.tbUseJoker, binding.tbUseJoker.isChecked)
+        checkToggleButton(binding.tbUseJoker, binding.tbUseJoker.isChecked)
         binding.tbUseJoker.setOnCheckedChangeListener { button, isChecked ->
-            checkToogleButton(button, isChecked)
+            checkToggleButton(button, isChecked)
         }
     }
 
-    private fun checkToogleButton(button: CompoundButton, isChecked: Boolean) {
+    private fun checkToggleButton(button: CompoundButton, isChecked: Boolean) {
         val cardsArray = resources.getStringArray(R.array.cards_array).toList()
         val color = if (isChecked) {
             resources.getColor(R.color.yellow_700, null)
