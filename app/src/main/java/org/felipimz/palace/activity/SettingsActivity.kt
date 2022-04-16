@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import org.felipimz.palace.R
 import org.felipimz.palace.databinding.ActivitySettingsBinding
 import org.felipimz.palace.model.Preferences
-import org.felipimz.palace.repository.PreferencesRepository
+import org.felipimz.palace.viewmodel.PreferencesViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var preferencesViewModel: PreferencesRepository
+    private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var cardAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preferencesViewModel = PreferencesRepository(this)
+        preferencesViewModel = PreferencesViewModel(this)
         binding.etNickname.setText(preferencesViewModel.loadNickName())
         initToggleButton()
         initDeck()
@@ -72,8 +73,21 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnCancel.setOnClickListener {
-            onBackPressed()
+        binding.btnReset.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(R.string.confirm_reset)
+                .setPositiveButton(
+                    R.string.yes
+                ) { _, _ ->
+                    deleteSharedPreferences("preferences")
+                    onBackPressed()
+                }
+                .setNegativeButton(
+                    R.string.cancel
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                }
+            builder.create().show()
         }
     }
 

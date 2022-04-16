@@ -59,4 +59,16 @@
             android:fontFamily="cursive"
             tools:ignore="TextContrastCheck"/>
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_help"
+            android:id="@+id/ivHelp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:tint="@color/black"
+            android:contentDescription="@string/help"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
