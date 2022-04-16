@@ -19,7 +19,7 @@ class PreferencesViewModel(context: Context) : ViewModel() {
             preferencesFile.getBoolean("doubleDeck", true),
             preferencesFile.getBoolean("wildcardAsSpecial", false),
             preferencesFile.getString("rules", "default")!!,
-            preferencesFile.getString("card", "blue")!!
+            preferencesFile.getInt("card", 0)
         )
     }
 
@@ -37,8 +37,12 @@ class PreferencesViewModel(context: Context) : ViewModel() {
 
     fun loadDeck(): Int {
         val deckResource = when (preferences.card) {
-            "blue" -> R.drawable.blue_card
-            "red" -> R.drawable.red_card
+            0 -> R.drawable.blue_card
+            1 -> R.drawable.red_card
+            2 -> R.drawable.farwest_card
+            3 -> R.drawable.nature_card
+            4 -> R.drawable.tech_card
+            5 -> R.drawable.royal_card
             else -> R.drawable.blue_card
         }
         return deckResource
@@ -48,7 +52,7 @@ class PreferencesViewModel(context: Context) : ViewModel() {
         return preferences.rules
     }
 
-    fun loadCard(): String {
+    fun loadCard(): Int {
         return preferences.card
     }
 

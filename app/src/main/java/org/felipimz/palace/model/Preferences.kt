@@ -6,5 +6,5 @@ data class Preferences(
     var doubleDeck: Boolean = true,
     var wildcardAsSpecial: Boolean = false,
     var rules: String = "default",
-    var card: String = "blue",
+    var card: Int = 0,
 )

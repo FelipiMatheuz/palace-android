@@ -61,6 +61,15 @@
         <item>Personalizando o Jogo</item>
     </string-array>
 
+    <string-array name="decks_array">
+        <item>azul</item>
+        <item>vermelho</item>
+        <item>faroeste</item>
+        <item>natureza</item>
+        <item>tecno</item>
+        <item>realeza</item>
+    </string-array>
+
     <string-array name="cards_array">
         <item>2</item>
         <item>3</item>

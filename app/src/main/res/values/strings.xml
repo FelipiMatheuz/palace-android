@@ -62,6 +62,15 @@
         <item>Game Customization</item>
     </string-array>
 
+    <string-array name="decks_array">
+        <item>blue</item>
+        <item>red</item>
+        <item>farwest</item>
+        <item>nature</item>
+        <item>tech</item>
+        <item>royal</item>
+    </string-array>
+
     <string-array name="cards_array">
         <item>2</item>
         <item>3</item>
