@@ -33,5 +33,10 @@ class MenuActivity : AppCompatActivity() {
             val settingsIntent = Intent(this, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }
+
+        binding.ivHelp.setOnClickListener {
+            val helpIntent = Intent(this, HelpActivity::class.java)
+            startActivity(helpIntent)
+        }
     }
 }

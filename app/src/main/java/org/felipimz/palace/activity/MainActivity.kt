@@ -17,8 +17,8 @@ import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.History
 import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
-import org.felipimz.palace.repository.HistoryRepository
-import org.felipimz.palace.repository.PreferencesRepository
+import org.felipimz.palace.viewmodel.HistoryViewModel
+import org.felipimz.palace.viewmodel.PreferencesViewModel
 import org.felipimz.palace.viewmodel.MainViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
-    lateinit var preferencesViewModel: PreferencesRepository
+    lateinit var preferencesViewModel: PreferencesViewModel
 
     private lateinit var cardHandAdapter1: CardHandAdapter
     private lateinit var cardHandAdapter2: CardHandAdapter
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preferencesViewModel = PreferencesRepository(this)
+        preferencesViewModel = PreferencesViewModel(this)
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
         viewModel.distributeCard(
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             "single",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
         )
-        val repository = HistoryRepository(this)
+        val repository = HistoryViewModel(this)
         repository.setHistoryList(history)
     }
 

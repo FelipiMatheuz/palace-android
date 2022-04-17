@@ -20,7 +20,7 @@
             android:tint="@color/white"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toStartOf="@+id/tv_position"
-            android:contentDescription="@string/color_ilustration"/>
+            android:contentDescription="@string/color_illustration"/>
 
     <TextView
             tools:text="4th"

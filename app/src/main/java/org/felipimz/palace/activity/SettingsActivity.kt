@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import org.felipimz.palace.R
 import org.felipimz.palace.databinding.ActivitySettingsBinding
 import org.felipimz.palace.model.Preferences
-import org.felipimz.palace.repository.PreferencesRepository
+import org.felipimz.palace.viewmodel.PreferencesViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var preferencesViewModel: PreferencesRepository
+    private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var cardAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        preferencesViewModel = PreferencesRepository(this)
+        preferencesViewModel = PreferencesViewModel(this)
         binding.etNickname.setText(preferencesViewModel.loadNickName())
         initToggleButton()
         initDeck()
@@ -54,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
                     binding.cbWildcardSpecial.isChecked,
                     binding.cbDoubleDeck.isChecked,
                     rules,
-                    binding.spDeck.selectedItem.toString()
+                    binding.spDeck.selectedItemPosition
                 )
                 val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
                 val editor = preferences.edit()
@@ -62,7 +63,7 @@ class SettingsActivity : AppCompatActivity() {
                 editor.putBoolean("deckWithJoker", binding.tbUseJoker.isChecked)
                 editor.putBoolean("doubleDeck", binding.cbDoubleDeck.isChecked)
                 editor.putBoolean("wildcardAsSpecial", binding.cbWildcardSpecial.isChecked)
-                editor.putString("card", binding.spDeck.selectedItem.toString())
+                editor.putInt("card", binding.spDeck.selectedItemPosition)
                 editor.putString("rules", rules)
                 editor.apply()
                 onBackPressed()
@@ -72,8 +73,21 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnCancel.setOnClickListener {
-            onBackPressed()
+        binding.btnReset.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(R.string.confirm_reset)
+                .setPositiveButton(
+                    R.string.yes
+                ) { _, _ ->
+                    deleteSharedPreferences("preferences")
+                    onBackPressed()
+                }
+                .setNegativeButton(
+                    R.string.cancel
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                }
+            builder.create().show()
         }
     }
 
@@ -110,10 +124,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initDeck() {
-        val deckArray = listOf("blue", "red")
-        val deckAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, deckArray)
+        val decksArray = resources.getStringArray(R.array.decks_array).toList()
+        val deckAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, decksArray)
         binding.spDeck.adapter = deckAdapter
-        binding.spDeck.setSelection(deckAdapter.getPosition(preferencesViewModel.loadCard()))
+        binding.spDeck.setSelection(preferencesViewModel.loadCard())
     }
 
     private fun initToggleButton() {
