@@ -1,6 +1,6 @@
 # palace-android
 
-<img src="menu-screen.png" alt="menu screen">
+<img src="menu_screen.png" alt="menu screen">
 
 > Palace's Menu Screen
 
