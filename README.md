@@ -8,9 +8,9 @@ Palace is a card game. Well known as Shithead (mainly), Karma and Shed.
 
 ### Main goal
 
--Develop a card game "Palace" for Android.
--Portifolio (show project structure, data flow and use of resources that Kotlin can offer)
--Fun (I found many other card games on Play Store but none palace/shithead card game)
+- Develop a card game "Palace" for Android.
+- Portifolio (show project structure, data flow and use of resources that Kotlin can offer)
+- Fun (I found many other card games on Play Store but none palace/shithead card game)
 
 ### Development
 
@@ -23,9 +23,9 @@ There were some steps (tasks) it had to consider when the game started to be imp
 - [x] Tutorial
 
 Other steps in development:
--[ ] Multiplayer feature
--[ ] Credits
--[ ] Records on server
+- [ ] Multiplayer feature
+- [ ] Credits
+- [ ] Records on server
 
 ## System setup (for project)
 
