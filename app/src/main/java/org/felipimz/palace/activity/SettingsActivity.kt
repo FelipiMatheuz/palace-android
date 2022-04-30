@@ -53,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
                     binding.etNickname.toString(),
                     binding.tbUseJoker.isChecked,
                     binding.cbWildcardSpecial.isChecked,
-                    binding.cbDoubleDeck.isChecked,
+                    binding.cb4Player.isChecked,
                     rules,
                     binding.spDeck.selectedItemPosition
                 )
@@ -61,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
                 val editor = preferences.edit()
                 editor.putString("nickname", binding.etNickname.text.toString())
                 editor.putBoolean("deckWithJoker", binding.tbUseJoker.isChecked)
-                editor.putBoolean("doubleDeck", binding.cbDoubleDeck.isChecked)
+                editor.putBoolean("doubleDeck", binding.cb4Player.isChecked)
                 editor.putBoolean("wildcardAsSpecial", binding.cbWildcardSpecial.isChecked)
                 editor.putInt("card", binding.spDeck.selectedItemPosition)
                 editor.putString("rules", rules)
@@ -132,7 +132,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun initToggleButton() {
         binding.cbWildcardSpecial.isChecked = preferencesViewModel.loadWildCardAsSpecial()
-        binding.cbDoubleDeck.isChecked = preferencesViewModel.loadDoubleDeck()
+        binding.cb4Player.isChecked = preferencesViewModel.loadDoubleDeck()
         binding.tbUseJoker.isChecked = preferencesViewModel.loadDeckWithJoker()
         checkToggleButton(binding.tbUseJoker, binding.tbUseJoker.isChecked)
         binding.tbUseJoker.setOnCheckedChangeListener { button, isChecked ->

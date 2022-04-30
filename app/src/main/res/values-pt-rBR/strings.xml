@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--menu/geral-->
     <string name="card_item">carta</string>
     <string name="singleplayer">Um Jogador</string>
     <string name="settings">Configurações</string>
     <string name="history">Histórico</string>
     <string name="multiplayer">Multijogador</string>
+    <string name="apply">Aplicar</string>
+    <string name="yes">Sim</string>
+    <string name="cancel">Cancelar</string>
+    <string name="reset">Restaurar</string>
+    <string name="color_illustration">Ilustração de Cor</string>
+    <string name="help">Ajuda</string>
+    <!--settings-->
     <string name="nickname">Apelido</string>
     <string name="use_joker">Usar Curinga?</string>
     <string name="deck">Baralho</string>
     <string name="rules">Regras</string>
     <string name="settings_default">Padrão</string>
     <string name="settings_custom">Personalizado</string>
+    <string name="settings_4_player">Modo 4-Jogadores</string>
+    <string name="settings_4_player_description">Jogue com o dobro de jogadores e baralho duplo</string>
     <string name="settings_burn_pile">Queimar pilha:</string>
+    <string name="settings_burn_pile_description">Padrão é 10</string>
     <string name="settings_reset_value">Zerar topo:</string>
+    <string name="settings_reset_value_description">Padrão é 2</string>
     <string name="settings_force_down">Forçar menor valor:</string>
+    <string name="settings_force_down_description">Padrão é 7</string>
     <string name="settings_reverse">Inverter direção:</string>
-    <string name="apply">Aplicar</string>
-    <string name="cancel">Cancelar</string>
+    <string name="settings_reverse_description">Padrão é Curinga ou 8 (dependendo se opção "Usar Curinga" estiver ativada ou não)</string>
     <string name="msg_multiple_effect_same_card">Uma carta não pode ter efeitos múltiplos. Faça o ajuste e tente novamente.</string>
     <string name="wildcards_as_special">Desconsiderar valor dos curingas</string>
-    <string name="color_illustration">Ilustração de Cor</string>
-
+    <string name="confirm_reset">Tem certeza que deseja restaurar as configurações?</string>
+    <!--history-->
     <string name="first">º</string>
     <string name="second">º</string>
     <string name="third">º</string>
@@ -28,16 +40,15 @@
     <string name="matches">partidas</string>
     <string name="wins">vitórias</string>
     <string name="confirm_exit">Você quer realmente sair desta partida?</string>
-    <string name="yes">Sim</string>
+    <!--game-->
     <string name="game_start">Jogo Iniciado</string>
     <string name="turn">Vez:</string>
     <string name="bot_turn">Vez: IA</string>
     <string name="winner">Vencedor:</string>
     <string name="bot_winner">Vencedor: IA</string>
-    <string name="settings_double_deck">Baralho Duplo</string>
     <string name="confirm_choice">Confirmar escolha</string>
     <string name="choose_your_cards">Escolha suas cartas</string>
-    <string name="help">Ajuda</string>
+    <!--help-->
     <string name="help_tittle">Como jogar</string>
     <string name="next">próximo &gt;</string>
     <string name="previous">&lt; anterior</string>
@@ -48,9 +59,7 @@
     <string name="card_ranking">Menor para maior, da esquerda para direita:\n\n2 &#8211; 3 &#8211; 4 &#8211; 5 &#8211; 6 &#8211; 7 &#8211; 8 &#8211; 9 &#8211; 10 &#8211; J &#8211; Q &#8211; K &#8211; A\n\nA carta de ZERAR o topo pode ser jogada inpendentemente (padrão é 2).</string>
     <string name="wildcards">Os curingas funcionam de maneira diferente do resto das cartas.\n\nDependendo de suas configurações, também não consideram os seus valores.\n\nCuringas de ZERAR o topo: essas cartas redefinem o valor no topo da pilha de descarte. O padrão é 2.\n\nCuringas de QUEIMAR cartas: essas cartas removem todas as cartas descartadas do jogo, até que um novo jogo seja iniciado. Além disso, dá ao jogador outra jogada após esta ação. O padrão é 10.\n\nCuringas de FORÇAR MENOR valor: essas cartas forçam o próximo jogador a usar uma carta com valor igual ou menor, em vez de valor igual ou maior. O padrão é 7.\n\nCuringas de INVERTER ordem: essas cartas invertem a ordem de jogo. Se um for jogado novamente, a ordem volta ao padrão. As cartas padrão são cartas Curinga, mas se o jogo for jogado sem eles, é 8.</string>
     <string name="game_customization">Você pode personalizar o seu jogo, devido à algumas variações do jogo Palace.\n\nPode mudar o baralho, incluir ou não as cartas Curingas, jogar com um ou dois baralhos e considerar os curingas como cartas especiais (quando não são considerados os seus valores).\n\nPode também alterar os valores curinga, mas não é recomendado quando está aprendendo ou quer jogar um jogo legítimo de Palace. No entanto, pode fazer isso se quiser jogar o seu "próprio jogo do Palace", apenas por diversão.\n\nVocê pode redefinir as preferências a qualquer momento.</string>
-    <string name="reset">Restaurar</string>
-    <string name="confirm_reset">Tem certeza que deseja restaurar as configurações?</string>
-
+    <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Objetivo do Jogo</item>
         <item>Ajustando seu Jogo</item>
@@ -60,7 +69,6 @@
         <item>Curingas</item>
         <item>Personalizando o Jogo</item>
     </string-array>
-
     <string-array name="decks_array">
         <item>azul</item>
         <item>vermelho</item>
@@ -69,7 +77,6 @@
         <item>tecno</item>
         <item>realeza</item>
     </string-array>
-
     <string-array name="cards_array">
         <item>2</item>
         <item>3</item>

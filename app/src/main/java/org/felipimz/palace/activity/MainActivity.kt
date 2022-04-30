@@ -14,14 +14,10 @@ import org.felipimz.palace.R
 import org.felipimz.palace.adapter.CardHandAdapter
 import org.felipimz.palace.databinding.ActivityMainBinding
 import org.felipimz.palace.model.Card
-import org.felipimz.palace.model.History
 import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
-import org.felipimz.palace.viewmodel.HistoryViewModel
 import org.felipimz.palace.viewmodel.PreferencesViewModel
 import org.felipimz.palace.viewmodel.MainViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,26 +62,22 @@ class MainActivity : AppCompatActivity() {
     private fun checkWinner(value: MutableList<Card>) {
         val countPlayer1 = value.filter { card -> card.owner == Owner.PLAYER1 }.size
         val countPlayer2 = value.filter { card -> card.owner == Owner.PLAYER2 }.size
-        val countPlayer3 = value.filter { card -> card.owner == Owner.PLAYER3 }.size
-        val countPlayer4 = value.filter { card -> card.owner == Owner.PLAYER4 }.size
+        val countPlayer3 = if (preferencesViewModel.loadDoubleDeck()) {
+            value.filter { card -> card.owner == Owner.PLAYER3 }.size
+        } else {
+            99
+        }
+        val countPlayer4 = if (preferencesViewModel.loadDoubleDeck()) {
+            value.filter { card -> card.owner == Owner.PLAYER4 }.size
+        } else {
+            99
+        }
 
         if (countPlayer1 == 0 || countPlayer2 == 0 || countPlayer3 == 0 || countPlayer4 == 0) {
             displayWinner(intArrayOf(countPlayer1, countPlayer2, countPlayer3, countPlayer4))
             lockActions = true
             lockBot = true
         }
-    }
-
-    private fun recordHistory(sizes: IntArray) {
-        val player1size = sizes[0]
-        sizes.sort()
-        val history = History(
-            sizes.indexOf(player1size) + 1,
-            "single",
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-        )
-        val repository = HistoryViewModel(this)
-        repository.setHistoryList(history)
     }
 
     private fun loadGameSetup() {
@@ -129,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 else -> "${getString(R.string.bot_winner)}${player}"
             }
             delay(1500)
-            recordHistory(sizes)
+            viewModel.recordHistory(sizes, this@MainActivity)
             super.onBackPressed()
             finish()
         }
@@ -173,37 +165,54 @@ class MainActivity : AppCompatActivity() {
             true,
             this
         )
-        cardHandAdapter3 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
-            false,
-            this
-        )
-        cardHandAdapter4 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
-            false,
-            this
-        )
 
         binding.poolPlayer1.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.poolPlayer2.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.poolPlayer3.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.poolPlayer4.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.poolPlayer1.adapter = cardHandAdapter1
         binding.poolPlayer2.adapter = cardHandAdapter2
-        binding.poolPlayer3.adapter = cardHandAdapter3
-        binding.poolPlayer4.adapter = cardHandAdapter4
+
+        if (preferencesViewModel.loadDoubleDeck()) {
+            cardHandAdapter3 = CardHandAdapter(
+                value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
+                false,
+                this
+            )
+            cardHandAdapter4 = CardHandAdapter(
+                value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
+                false,
+                this
+            )
+
+            binding.poolPlayer3.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            binding.poolPlayer4.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+            binding.poolPlayer3.adapter = cardHandAdapter3
+            binding.poolPlayer4.adapter = cardHandAdapter4
+        } else {
+            binding.poolPlayer3.visibility = View.GONE
+            binding.poolPlayer4.visibility = View.GONE
+        }
     }
 
     private fun loadTable(value: MutableList<Card>) {
         setupTable(1, value.filter { it.owner == Owner.PLAYER1 })
         setupTable(2, value.filter { it.owner == Owner.PLAYER2 })
-        setupTable(3, value.filter { it.owner == Owner.PLAYER3 })
-        setupTable(4, value.filter { it.owner == Owner.PLAYER4 })
+        if (preferencesViewModel.loadDoubleDeck()) {
+            setupTable(3, value.filter { it.owner == Owner.PLAYER3 })
+            setupTable(4, value.filter { it.owner == Owner.PLAYER4 })
+        } else {
+            binding.cardView1Player3.visibility = View.GONE
+            binding.cardView2Player3.visibility = View.GONE
+            binding.cardView3Player3.visibility = View.GONE
+            binding.cardView1Player4.visibility = View.GONE
+            binding.cardView2Player4.visibility = View.GONE
+            binding.cardView3Player4.visibility = View.GONE
+        }
     }
 
     private fun setupTable(player: Int, value: List<Card>) {
