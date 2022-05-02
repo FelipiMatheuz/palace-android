@@ -1,12 +1,12 @@
 package org.felipimz.palace.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.felipimz.palace.model.Card
-import org.felipimz.palace.model.Owner
-import org.felipimz.palace.model.Position
-import org.felipimz.palace.model.WildCardEffect
+import org.felipimz.palace.model.*
 import org.felipimz.palace.util.CardUtil
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MainViewModel : ViewModel() {
 
@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     val deck = MutableLiveData<MutableList<Card>>()
     private val cardUtil = CardUtil()
     var currentTurn: Int = 1
+    var lastPlayer: Int = 4
     private val additionalInfo: Map<String, Int>
     private var reverse: Boolean = false
 
@@ -41,10 +42,10 @@ class MainViewModel : ViewModel() {
             } else if (cardIndex < 6) {
                 card.position = Position.HAND
                 card.owner = Owner.PLAYER2
-            } else if (cardIndex < 9) {
+            } else if (doubleDeck && cardIndex < 9) {
                 card.position = Position.HAND
                 card.owner = Owner.PLAYER3
-            } else if (cardIndex < 12) {
+            } else if (doubleDeck && cardIndex < 12) {
                 card.position = Position.HAND
                 card.owner = Owner.PLAYER4
                 //distribute on table
@@ -56,8 +57,12 @@ class MainViewModel : ViewModel() {
         //distribute the rest
         cardIndex = distributeTable(cardIndex, Owner.PLAYER1)
         cardIndex = distributeTable(cardIndex, Owner.PLAYER2)
-        cardIndex = distributeTable(cardIndex, Owner.PLAYER3)
-        distributeTable(cardIndex, Owner.PLAYER4)
+        if (doubleDeck) {
+            cardIndex = distributeTable(cardIndex, Owner.PLAYER3)
+            distributeTable(cardIndex, Owner.PLAYER4)
+        } else {
+            lastPlayer = 2
+        }
     }
 
     private fun distributeTable(index: Int, owner: Owner): Int {
@@ -130,12 +135,12 @@ class MainViewModel : ViewModel() {
     private fun changeTurn() {
         if (reverse) {
             if (currentTurn == 1) {
-                currentTurn = 4
+                currentTurn = lastPlayer
             } else {
                 currentTurn--
             }
         } else {
-            if (currentTurn == 4) {
+            if (currentTurn == lastPlayer) {
                 currentTurn = 1
             } else {
                 currentTurn++
@@ -167,7 +172,8 @@ class MainViewModel : ViewModel() {
     }
 
     private fun validateDiscard(target: Card, previous: Card?, ignoreValueWildCards: Boolean): Boolean {
-        val isWildCard = target.wildCard != WildCardEffect.NONE
+        val isValidWildCard =
+            (ignoreValueWildCards && target.wildCard != WildCardEffect.NONE) || target.wildCard == WildCardEffect.RESET
         val isValidValueToDiscard =
             previous == null || previous.wildCard == WildCardEffect.RESET ||
                     if (previous.wildCard == WildCardEffect.FORCEDOWN) {
@@ -175,8 +181,7 @@ class MainViewModel : ViewModel() {
                     } else {
                         target.value >= previous.value
                     }
-
-        return (ignoreValueWildCards && isWildCard) || isValidValueToDiscard
+        return isValidWildCard || isValidValueToDiscard
     }
 
     fun getCard(ignoreValueWildCards: Boolean, lockBot: Boolean): Boolean {
@@ -395,5 +400,17 @@ class MainViewModel : ViewModel() {
             target.position = Position.HAND
             deck.postValue(deck.value)
         }
+    }
+
+    fun recordHistory(sizes: IntArray, context: Context) {
+        val player1size = sizes[0]
+        sizes.sort()
+        val history = History(
+            sizes.indexOf(player1size) + 1,
+            "single",
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+        )
+        val historyViewModel = HistoryViewModel(context)
+        historyViewModel.setHistoryList(history)
     }
 }

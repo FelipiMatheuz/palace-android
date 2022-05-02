@@ -1,4 +1,5 @@
 <resources>
+    <!--menu/general-->
     <string name="app_name" translatable="false">Palace Card Game</string>
     <string name="card_item">card item</string>
     <string name="singleplayer">Singleplayer</string>
@@ -6,22 +7,33 @@
     <string name="history">Records</string>
     <string name="multiplayer">Multiplayer</string>
     <string name="title_menu" translatable="false">Palace</string>
+    <string name="apply">Apply</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+    <string name="color_illustration">Color Illustration</string>
+    <string name="help">Help</string>
+    <!--settings-->
     <string name="nickname">Nickname</string>
     <string name="use_joker">Use Joker?</string>
     <string name="deck">Deck</string>
     <string name="rules">Rules</string>
     <string name="settings_default">Default</string>
     <string name="settings_custom">Custom</string>
+    <string name="settings_4_player">4-Player Mode</string>
+    <string name="settings_4_player_description">Play with double of players and double deck</string>
     <string name="settings_burn_pile">Burn Pile:</string>
+    <string name="settings_burn_pile_description">Default is 10</string>
     <string name="settings_reset_value">Reset Value:</string>
+    <string name="settings_reset_value_description">Default is 2</string>
     <string name="settings_force_down">Force Lower Value:</string>
+    <string name="settings_force_down_description">Default is 7</string>
     <string name="settings_reverse">Reverse Direction:</string>
-    <string name="apply">Apply</string>
-    <string name="cancel">Cancel</string>
+    <string name="settings_reverse_description">Default is Joker or 8 (depending on if option "User Joker" is on or not)</string>
     <string name="msg_multiple_effect_same_card">Cannot a card has multiple effects. Check and try again.</string>
     <string name="wildcards_as_special">Wildcards as Special</string>
-    <string name="color_illustration">Color Illustration</string>
-
+    <string name="confirm_reset">Are you sure you want to reset the settings?</string>
+    <!--history-->
     <string name="first">st</string>
     <string name="second">nd</string>
     <string name="third">rd</string>
@@ -29,16 +41,15 @@
     <string name="matches">matches</string>
     <string name="wins">wins</string>
     <string name="confirm_exit">Are you sure you want to exit this match?</string>
-    <string name="yes">Yes</string>
+    <!--game-->
     <string name="game_start">Game Start</string>
     <string name="turn">Turn:</string>
     <string name="bot_turn">Turn: Bot</string>
     <string name="winner">Winner:</string>
     <string name="bot_winner">Winner: Bot</string>
-    <string name="settings_double_deck">Double Deck</string>
     <string name="confirm_choice">Confirm choice</string>
     <string name="choose_your_cards">Choose your cards</string>
-    <string name="help">Help</string>
+    <!--help-->
     <string name="help_tittle">How To Play</string>
     <string name="next">next &gt;</string>
     <string name="previous">&lt; previous</string>
@@ -49,9 +60,7 @@
     <string name="card_ranking">Lower to higher, from left to right:\n\n2 &#8211; 3 &#8211; 4 &#8211; 5 &#8211; 6 &#8211; 7 &#8211; 8 &#8211; 9 &#8211; 10 &#8211; J &#8211; Q &#8211; K &#8211; A\n\nRESET card plays independently (default is 2).</string>
     <string name="wildcards">Wildcards works differently of the rest of cards.\n\nDepending of your settings, it also doesn\'t consider their values.\n\nRESET wildcards: these cards reset the value on top of discard pile. Default is 2.\n\nBURN wildcards: these cards remove all discarded cards from the game, until a new game is started. Also, it gives the player another play after this action. Default is 10.\n\nFORCE LOWER wildcards: these cards forces the next player uses a card with equal or lower value, instead of equal or greater value. Default is 7.\n\nREVERSE wildcards: these cards reverses play order. If one is played again, the play order back to standard. Default is Joker, but if the game is played without it, is 8.</string>
     <string name="game_customization">You can customize your game, due to some variations of playing Palace.\n\nYou can change the deck, include Joker or not, play with one or two decks, and consider wildcards as special cards (when it\'s not considered their values).\n\nYou can change the wildcard values as well, but it is not recommended when you are learning or want play a legitimate Palace game. However, you can do it if you want to play your "own Palace game", just for fun.\n\nYou can reset the preferences anytime.</string>
-    <string name="reset">Reset</string>
-    <string name="confirm_reset">Are you sure you want to reset the settings?</string>
-
+    <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Game Objective</item>
         <item>Setup your Game</item>
@@ -61,7 +70,6 @@
         <item>WildCards</item>
         <item>Game Customization</item>
     </string-array>
-
     <string-array name="decks_array">
         <item>blue</item>
         <item>red</item>
@@ -70,7 +78,6 @@
         <item>tech</item>
         <item>royal</item>
     </string-array>
-
     <string-array name="cards_array">
         <item>2</item>
         <item>3</item>
