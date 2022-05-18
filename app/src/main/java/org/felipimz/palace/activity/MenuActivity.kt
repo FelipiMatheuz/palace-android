@@ -3,7 +3,6 @@ package org.felipimz.palace.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import org.felipimz.palace.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
@@ -21,7 +20,8 @@ class MenuActivity : AppCompatActivity() {
         }
 
         binding.multiplayer.setOnClickListener {
-            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+            val multiplayerIntent = Intent(this, LobbyActivity::class.java)
+            startActivity(multiplayerIntent)
         }
 
         binding.history.setOnClickListener {

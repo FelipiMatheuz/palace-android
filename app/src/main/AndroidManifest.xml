@@ -12,8 +12,15 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Palaceandroid">
         <activity
+                android:name=".activity.LobbyActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
+        <activity
                 android:name=".activity.HelpActivity"
-                android:exported="true"/>
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
         <activity
                 android:name=".activity.MenuActivity"
                 android:exported="true"

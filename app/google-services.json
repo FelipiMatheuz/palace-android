@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "58382445027",
+    "project_id": "org-palace-android",
+    "storage_bucket": "org-palace-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58382445027:android:081f287271ba8f202498d6",
+        "android_client_info": {
+          "package_name": "org.felipimz.palace_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58382445027-blsb8nhidgd9ujdmnpc3673gup874t85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7bw1Bd1b2rX1czOEBJ4zklVu8AGtjl1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58382445027-blsb8nhidgd9ujdmnpc3673gup874t85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
