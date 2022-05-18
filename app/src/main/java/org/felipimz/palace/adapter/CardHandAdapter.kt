@@ -1,6 +1,6 @@
 package org.felipimz.palace.adapter
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +9,12 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import org.felipimz.palace.R
+import org.felipimz.palace.activity.MainActivity
 import org.felipimz.palace.model.Card
+import org.felipimz.palace.model.Owner
+import org.felipimz.palace.model.Position
 
-class CardHandAdapter(val listCard: List<Card>, val orientation: Boolean, val context: Context) :
+class CardHandAdapter(private var listCard: List<Card>, private val orientation: Boolean, val activity: MainActivity) :
     RecyclerView.Adapter<CardHandAdapter.CardHandHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHandHolder {
@@ -29,21 +32,63 @@ class CardHandAdapter(val listCard: List<Card>, val orientation: Boolean, val co
         return CardHandHolder(view)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: CardHandHolder, position: Int) {
         val card = listCard[position]
+        if (card.owner == Owner.PLAYER1) {
+            val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
+            holder.ivCardItem.setImageResource(resId)
+        } else {
+            holder.ivCardItem.setImageResource(activity.preferencesViewModel.loadDeck())
+        }
+        holder.cvCard.foreground = if (card.position == Position.HAND_CLICKED) {
+            activity.getDrawable(R.drawable.highlight)
+        } else {
+            null
+        }
 
-        val resId = context.resources.getIdentifier(card.name, "drawable", context.packageName)
-        holder.ivCardItem.setImageResource(resId)
+        if (listCard.isNotEmpty() && card.owner == Owner.PLAYER1 && !activity.lockActions) {
+            holder.cvCard.setOnClickListener {
+                if (activity.isSetupCards) {
+                    if (card.position == Position.HAND_CLICKED) {
+                        card.position = Position.HAND
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { it.position = Position.HAND }
 
-        holder.cvCard.setOnClickListener {
-            Toast.makeText(context, card.name, Toast.LENGTH_SHORT).show()
+                        card.position = Position.HAND_CLICKED
+                    }
+                } else {
+                    if (card.position == Position.HAND_CLICKED) {
+                        val listClicked = listCard.filter { c ->
+                            c.position == Position.HAND_CLICKED
+                        }
+                        activity.viewModel.addToDiscard(
+                            listClicked,
+                            activity.preferencesViewModel.loadWildCardAsSpecial()
+                        )
+                        activity.displayTurn()
+                    } else {
+                        listCard.filter { it.position == Position.HAND_CLICKED }.forEach { c ->
+                            if (c.value != card.value) {
+                                c.position = Position.HAND
+                            }
+                        }
+                        card.position = Position.HAND_CLICKED
+                    }
+                }
+                notifyDataSetChanged()
+            }
+            holder.cvCard.setOnLongClickListener {
+                Toast.makeText(activity, card.name.replace("_", " "), Toast.LENGTH_SHORT).show()
+                true
+            }
         }
     }
 
     override fun getItemCount() = listCard.size
 
     class CardHandHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var ivCardItem = view.findViewById<ImageView>(R.id.card_item)
-        var cvCard = view.findViewById<CardView>(R.id.card_cv)
+        var ivCardItem: ImageView = view.findViewById(R.id.card_item)
+        var cvCard: CardView = view.findViewById(R.id.card_cv)
     }
 }

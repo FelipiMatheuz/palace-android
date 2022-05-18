@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--menu/geral-->
+    <string name="card_item">carta</string>
+    <string name="singleplayer">Um Jogador</string>
+    <string name="settings">Configurações</string>
+    <string name="history">Histórico</string>
+    <string name="multiplayer">Multijogador</string>
+    <string name="apply">Aplicar</string>
+    <string name="yes">Sim</string>
+    <string name="cancel">Cancelar</string>
+    <string name="reset">Restaurar</string>
+    <string name="color_illustration">Ilustração de Cor</string>
+    <string name="help">Ajuda</string>
+    <!--settings-->
+    <string name="nickname">Apelido</string>
+    <string name="use_joker">Usar Curinga?</string>
+    <string name="deck">Baralho</string>
+    <string name="rules">Regras</string>
+    <string name="settings_default">Padrão</string>
+    <string name="settings_custom">Personalizado</string>
+    <string name="settings_4_player">Modo 4-Jogadores</string>
+    <string name="settings_4_player_description">Jogue com o dobro de jogadores e baralho duplo</string>
+    <string name="settings_burn_pile">Queimar pilha:</string>
+    <string name="settings_burn_pile_description">Padrão é 10</string>
+    <string name="settings_reset_value">Zerar topo:</string>
+    <string name="settings_reset_value_description">Padrão é 2</string>
+    <string name="settings_force_down">Forçar menor valor:</string>
+    <string name="settings_force_down_description">Padrão é 7</string>
+    <string name="settings_reverse">Inverter direção:</string>
+    <string name="settings_reverse_description">Padrão é Curinga ou 8 (dependendo se opção "Usar Curinga" estiver ativada ou não)</string>
+    <string name="msg_multiple_effect_same_card">Uma carta não pode ter efeitos múltiplos. Faça o ajuste e tente novamente.</string>
+    <string name="wildcards_as_special">Desconsiderar valor dos curingas</string>
+    <string name="confirm_reset">Tem certeza que deseja restaurar as configurações?</string>
+    <!--history-->
+    <string name="first">º</string>
+    <string name="second">º</string>
+    <string name="third">º</string>
+    <string name="ordinal">º</string>
+    <string name="matches">partidas</string>
+    <string name="wins">vitórias</string>
+    <string name="confirm_exit">Você quer realmente sair desta partida?</string>
+    <!--game-->
+    <string name="game_start">Jogo Iniciado</string>
+    <string name="turn">Vez:</string>
+    <string name="bot_turn">Vez: IA</string>
+    <string name="winner">Vencedor:</string>
+    <string name="bot_winner">Vencedor: IA</string>
+    <string name="confirm_choice">Confirmar escolha</string>
+    <string name="choose_your_cards">Escolha suas cartas</string>
+    <!--help-->
+    <string name="help_tittle">Como jogar</string>
+    <string name="next">próximo &gt;</string>
+    <string name="previous">&lt; anterior</string>
+    <string name="game_objective">O jogo de cartas Palace (also well known as Shithead) is a game that you play your cards in a discard pile using ascending order (exception for some wildcards).\n\nThe First player to run out of cards wins.</string>
+    <string name="game_setup">O próprio jogo distribui cartas para os jogadores.\n\nCada jogador recebe 9 cartas: 3 viradas para baixo (ninguém pode ver essas cartas), 3 viradas para cima (todo mundo vê qual é a carta) e 3 nas mãos (cada jogador pode ver qual está na mão deles).\n\nAntes de começar a jogar, pode trocar as suas cartas que estão viradas para cima na mesa pelas que estão nas suas mãos.\n\nGeralmente, os jogadores trocam as cartas viradas para cima para serem as mais fortes do que as suas mãos, facilitando no momento em que começa a jogar essas cartas.</string>
+    <string name="starting_the_game">O primeiro jogador escolhe qualquer carta para descartar. Em seguida, o segundo jogador joga uma carta de valor igual ou superior à carta descartada, colocando-a no topo da pilha de descarte. O próximo jogador fará o mesmo que o segundo e assim por diante.\n\nVocê pode jogar várias cartas na sua vez, com o mesmo número ou letra, desde que todas sejam iguais ou superiores e do mesmo valor.\ n\nSe não tiver nenhuma carta que atenda aos critérios, deve jogar qualquer carta para pegar a pilha de descarte e adicioná-la à sua mão.\n\nNa sua vez, um jogador pode jogar qualquer curinga, o que aplica algumas condições no jogo (consulte a seção Curingas).\n\nSe quatro dos mesmos valores forem jogados em sequência, seja por um ou por vários jogadores, ele limpa a pilha de descarte e o próximo pode jogar qualquer carta de sua mão. \n\nO jogo continua ao redor da mesa até que a pilha de compras se esgote.</string>
+    <string name="ending_the_game">Quando a pilha de compras estiver esgotada, continue jogando até que não haja mais cartas na sua mão.\n\nSe você não puder jogar no seu turno, ainda terá que pegar o descarte empilhe e coloque-a em sua mão.\n\nDepois de pegar a pilha de descarte, você deve jogar todas as cartas em suas mãos antes de jogar de suas cartas na mesa.\n\nQuando for a sua vez, e você não tem cartas em sua mão, você pode jogar uma carta de suas cartas viradas para cima na sua frente.\n\nQuando for sua vez e você tiver jogado todas as suas cartas viradas para cima, escolha uma carta que esteja virada para baixo na mesa.\n\nSe ela jogar na carta atual por não ser igual nem maior, e não for curinga de ZERAR o topo, você pegará a pilha de descarte.\n\nSe você pegue a pilha de descarte, você deve jogá-las antes de continuar jogando suas cartas viradas para baixo.\n\nQuando qualquer jogador estiver sem cartas, o jogo termina e a posição do jogo será determinada de acordo com quantas cartas restantes cada jogador tem (em ordem ascendente).</string>
+    <string name="card_ranking">Menor para maior, da esquerda para direita:\n\n2 &#8211; 3 &#8211; 4 &#8211; 5 &#8211; 6 &#8211; 7 &#8211; 8 &#8211; 9 &#8211; 10 &#8211; J &#8211; Q &#8211; K &#8211; A\n\nA carta de ZERAR o topo pode ser jogada inpendentemente (padrão é 2).</string>
+    <string name="wildcards">Os curingas funcionam de maneira diferente do resto das cartas.\n\nDependendo de suas configurações, também não consideram os seus valores.\n\nCuringas de ZERAR o topo: essas cartas redefinem o valor no topo da pilha de descarte. O padrão é 2.\n\nCuringas de QUEIMAR cartas: essas cartas removem todas as cartas descartadas do jogo, até que um novo jogo seja iniciado. Além disso, dá ao jogador outra jogada após esta ação. O padrão é 10.\n\nCuringas de FORÇAR MENOR valor: essas cartas forçam o próximo jogador a usar uma carta com valor igual ou menor, em vez de valor igual ou maior. O padrão é 7.\n\nCuringas de INVERTER ordem: essas cartas invertem a ordem de jogo. Se um for jogado novamente, a ordem volta ao padrão. As cartas padrão são cartas Curinga, mas se o jogo for jogado sem eles, é 8.</string>
+    <string name="game_customization">Você pode personalizar o seu jogo, devido à algumas variações do jogo Palace.\n\nPode mudar o baralho, incluir ou não as cartas Curingas, jogar com um ou dois baralhos e considerar os curingas como cartas especiais (quando não são considerados os seus valores).\n\nPode também alterar os valores curinga, mas não é recomendado quando está aprendendo ou quer jogar um jogo legítimo de Palace. No entanto, pode fazer isso se quiser jogar o seu "próprio jogo do Palace", apenas por diversão.\n\nVocê pode redefinir as preferências a qualquer momento.</string>
+    <!--string arrays-->
+    <string-array name="help_topics_array">
+        <item>Objetivo do Jogo</item>
+        <item>Ajustando seu Jogo</item>
+        <item>Iniciando o Jogo</item>
+        <item>Finalizando o Jogo</item>
+        <item>Pontuação das cartas</item>
+        <item>Curingas</item>
+        <item>Personalizando o Jogo</item>
+    </string-array>
+    <string-array name="decks_array">
+        <item>azul</item>
+        <item>vermelho</item>
+        <item>faroeste</item>
+        <item>natureza</item>
+        <item>tecno</item>
+        <item>realeza</item>
+    </string-array>
+    <string-array name="cards_array">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>J</item>
+        <item>Q</item>
+        <item>K</item>
+        <item>A</item>
+        <item>Curinga</item>
+    </string-array>
+</resources>

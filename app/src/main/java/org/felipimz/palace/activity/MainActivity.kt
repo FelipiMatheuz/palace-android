@@ -1,30 +1,38 @@
 package org.felipimz.palace.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.felipimz.palace.R
 import org.felipimz.palace.adapter.CardHandAdapter
 import org.felipimz.palace.databinding.ActivityMainBinding
 import org.felipimz.palace.model.Card
-import org.felipimz.palace.model.Faced
-import org.felipimz.palace.model.Pilar
+import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
-import org.felipimz.palace.viewmodel.MainViewModel
 import org.felipimz.palace.viewmodel.PreferencesViewModel
+import org.felipimz.palace.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MainViewModel
-    private lateinit var preferencesViewModel: PreferencesViewModel
+    lateinit var viewModel: MainViewModel
+    lateinit var preferencesViewModel: PreferencesViewModel
 
     private lateinit var cardHandAdapter1: CardHandAdapter
     private lateinit var cardHandAdapter2: CardHandAdapter
     private lateinit var cardHandAdapter3: CardHandAdapter
     private lateinit var cardHandAdapter4: CardHandAdapter
+
+    var lockActions: Boolean = false
+    var isSetupCards: Boolean = true
+    private var lockBot: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,105 +43,263 @@ class MainActivity : AppCompatActivity() {
         preferencesViewModel = PreferencesViewModel(this)
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
-        viewModel.distributeCard(preferencesViewModel.loadDeckWithJoker())
+        viewModel.distributeCard(
+            preferencesViewModel.loadDeckWithJoker(),
+            preferencesViewModel.loadRules(),
+            preferencesViewModel.loadDoubleDeck()
+        )
 
-        // Observer
-        viewModel.pile.observe(this) { value: MutableList<Card> ->
-            binding.cardPile.tooltipText = value.size.toString()
-            if (value.size <= 0) {
-                binding.cardPile.setImageResource(0)
-            } else {
-                binding.cardPile.setImageResource(preferencesViewModel.loadDeck())
-            }
+        loadGameSetup()
+        viewModel.deck.observe(this) { value: MutableList<Card> ->
+            loadPiles(value)
+            loadHands(value)
+            loadTable(value)
+            checkWinner(value)
         }
-        loadHands()
-        loadPilars()
+
     }
 
-    private fun loadHands() {
-        cardHandAdapter1 = CardHandAdapter(viewModel.p1Hand.value!!.toList(), true, this)
-        cardHandAdapter2 = CardHandAdapter(viewModel.p2Hand.value!!.toList(), true, this)
-        cardHandAdapter3 = CardHandAdapter(viewModel.p3Hand.value!!.toList(), false, this)
-        cardHandAdapter4 = CardHandAdapter(viewModel.p4Hand.value!!.toList(), false, this)
+    private fun checkWinner(value: MutableList<Card>) {
+        val countPlayer1 = value.filter { card -> card.owner == Owner.PLAYER1 }.size
+        val countPlayer2 = value.filter { card -> card.owner == Owner.PLAYER2 }.size
+        val countPlayer3 = if (preferencesViewModel.loadDoubleDeck()) {
+            value.filter { card -> card.owner == Owner.PLAYER3 }.size
+        } else {
+            99
+        }
+        val countPlayer4 = if (preferencesViewModel.loadDoubleDeck()) {
+            value.filter { card -> card.owner == Owner.PLAYER4 }.size
+        } else {
+            99
+        }
+
+        if (countPlayer1 == 0 || countPlayer2 == 0 || countPlayer3 == 0 || countPlayer4 == 0) {
+            displayWinner(intArrayOf(countPlayer1, countPlayer2, countPlayer3, countPlayer4))
+            lockActions = true
+            lockBot = true
+        }
+    }
+
+    private fun loadGameSetup() {
+        viewModel.viewModelScope.launch {
+            binding.messageTable.text = getString(R.string.game_start)
+            delay(1500)
+            binding.messageTable.text = getString(R.string.choose_your_cards)
+            delay(1500)
+            binding.messageTable.text = ""
+            binding.confirmSetup.visibility = View.VISIBLE
+            binding.confirmSetup.setOnClickListener {
+                it.visibility = View.GONE
+                isSetupCards = false
+                displayTurn()
+            }
+        }
+    }
+
+    fun displayTurn() {
+        viewModel.viewModelScope.launch {
+            binding.messageTable.text = when (viewModel.currentTurn) {
+                1 -> "${getString(R.string.turn)} ${preferencesViewModel.loadNickName()}"
+                else -> "${getString(R.string.bot_turn)}${viewModel.currentTurn}"
+            }
+            lockActions = viewModel.currentTurn != 1
+            delay(1500)
+            binding.messageTable.text = ""
+            val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial(), lockBot)
+
+            if (display) {
+                displayTurn()
+            }
+        }
+    }
+
+    private fun displayWinner(sizes: IntArray) {
+        viewModel.viewModelScope.launch {
+            val player = sizes.indexOf(0) + 1
+            binding.messageTable.text = when (player) {
+                1 -> "${getString(R.string.winner)} ${preferencesViewModel.loadNickName()}"
+                else -> "${getString(R.string.bot_winner)}${player}"
+            }
+            delay(1500)
+            viewModel.recordHistory(sizes, this@MainActivity)
+            super.onBackPressed()
+            finish()
+        }
+    }
+
+    private fun loadPiles(value: MutableList<Card>) {
+        val pile = value.filter {
+            it.owner == Owner.ON_PILE
+        }
+        binding.cardPile.tooltipText = pile.size.toString()
+        if (pile.isEmpty()) {
+            binding.cardPile.setImageResource(0)
+        } else {
+            binding.cardPile.setImageResource(preferencesViewModel.loadDeck())
+        }
+
+        val discarded = value.filter {
+            it.owner == Owner.DISCARDED
+        }
+        binding.cardDiscarded.tooltipText = discarded.size.toString()
+        if (discarded.isEmpty()) {
+            binding.cardDiscarded.setImageResource(0)
+        } else {
+            val resId = resources.getIdentifier(
+                discarded.single { it.position == Position.ON_TOP }.name,
+                "drawable",
+                packageName
+            )
+            binding.cardDiscarded.setImageResource(resId)
+        }
+    }
+
+    private fun loadHands(value: MutableList<Card>) {
+        cardHandAdapter1 = CardHandAdapter(
+            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") }.sortedBy { it.value },
+            true,
+            this
+        )
+        cardHandAdapter2 = CardHandAdapter(
+            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") }.sortedBy { it.value },
+            true,
+            this
+        )
 
         binding.poolPlayer1.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.poolPlayer2.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.poolPlayer3.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.poolPlayer4.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.poolPlayer1.adapter = cardHandAdapter1
         binding.poolPlayer2.adapter = cardHandAdapter2
-        binding.poolPlayer3.adapter = cardHandAdapter3
-        binding.poolPlayer4.adapter = cardHandAdapter4
+
+        if (preferencesViewModel.loadDoubleDeck()) {
+            cardHandAdapter3 = CardHandAdapter(
+                value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
+                false,
+                this
+            )
+            cardHandAdapter4 = CardHandAdapter(
+                value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
+                false,
+                this
+            )
+
+            binding.poolPlayer3.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            binding.poolPlayer4.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+            binding.poolPlayer3.adapter = cardHandAdapter3
+            binding.poolPlayer4.adapter = cardHandAdapter4
+        } else {
+            binding.poolPlayer3.visibility = View.GONE
+            binding.poolPlayer4.visibility = View.GONE
+        }
     }
 
-    private fun loadPilars() {
-        viewModel.p1Pilar.observe(this) { value: MutableList<Pilar> ->
-            setupPilar(1, value)
-        }
-        viewModel.p2Pilar.observe(this) { value: MutableList<Pilar> ->
-            setupPilar(2, value)
-        }
-        viewModel.p3Pilar.observe(this) { value: MutableList<Pilar> ->
-            setupPilar(3, value)
-        }
-        viewModel.p4Pilar.observe(this) { value: MutableList<Pilar> ->
-            setupPilar(4, value)
+    private fun loadTable(value: MutableList<Card>) {
+        setupTable(1, value.filter { it.owner == Owner.PLAYER1 })
+        setupTable(2, value.filter { it.owner == Owner.PLAYER2 })
+        if (preferencesViewModel.loadDoubleDeck()) {
+            setupTable(3, value.filter { it.owner == Owner.PLAYER3 })
+            setupTable(4, value.filter { it.owner == Owner.PLAYER4 })
+        } else {
+            binding.cardView1Player3.visibility = View.GONE
+            binding.cardView2Player3.visibility = View.GONE
+            binding.cardView3Player3.visibility = View.GONE
+            binding.cardView1Player4.visibility = View.GONE
+            binding.cardView2Player4.visibility = View.GONE
+            binding.cardView3Player4.visibility = View.GONE
         }
     }
 
-    private fun setupPilar(player: Int, value: MutableList<Pilar>) {
-        val leftPilar = value.filter { v -> v.position == Position.LEFT }
-        val centerPilar = value.filter { v -> v.position == Position.CENTER }
-        val rightPilar = value.filter { v -> v.position == Position.RIGHT }
+    private fun setupTable(player: Int, value: List<Card>) {
+        val leftPilar =
+            value.filter { v -> v.position.name.contains("TABLE_LEFT") }
+        val centerPilar =
+            value.filter { v -> v.position.name.contains("TABLE_CENTER") }
+        val rightPilar =
+            value.filter { v -> v.position.name.contains("TABLE_RIGHT") }
 
         when (player) {
             1 -> {
-                changeImage(leftPilar, binding.card1Player1)
-                changeImage(centerPilar, binding.card2Player1)
-                changeImage(rightPilar, binding.card3Player1)
+                changeImage(leftPilar, binding.card1Player1, cardHandAdapter1)
+                changeImage(centerPilar, binding.card2Player1, cardHandAdapter1)
+                changeImage(rightPilar, binding.card3Player1, cardHandAdapter1)
             }
             2 -> {
-                changeImage(leftPilar, binding.card1Player2)
-                changeImage(centerPilar, binding.card2Player2)
-                changeImage(rightPilar, binding.card3Player2)
+                changeImage(leftPilar, binding.card1Player2, cardHandAdapter2)
+                changeImage(centerPilar, binding.card2Player2, cardHandAdapter2)
+                changeImage(rightPilar, binding.card3Player2, cardHandAdapter2)
             }
             3 -> {
-                changeImage(leftPilar, binding.card1Player3)
-                changeImage(centerPilar, binding.card2Player3)
-                changeImage(rightPilar, binding.card3Player3)
+                changeImage(leftPilar, binding.card1Player3, cardHandAdapter3)
+                changeImage(centerPilar, binding.card2Player3, cardHandAdapter3)
+                changeImage(rightPilar, binding.card3Player3, cardHandAdapter3)
             }
             4 -> {
-                changeImage(leftPilar, binding.card1Player4)
-                changeImage(centerPilar, binding.card2Player4)
-                changeImage(rightPilar, binding.card3Player4)
+                changeImage(leftPilar, binding.card1Player4, cardHandAdapter4)
+                changeImage(centerPilar, binding.card2Player4, cardHandAdapter4)
+                changeImage(rightPilar, binding.card3Player4, cardHandAdapter4)
             }
         }
     }
 
-    private fun changeImage(pilar: List<Pilar>, imageView: ImageView) {
-        if (pilar.isEmpty()) {
+    private fun changeImage(card: List<Card>, imageView: ImageView, adapter: CardHandAdapter) {
+        if (card.isEmpty()) {
             imageView.setImageResource(0)
+            imageView.isEnabled = false
         } else {
             try {
-                val cardFacedUp = pilar.single { v -> v.faced == Faced.UP }
+                val cardUp = card.single { v -> v.position.name.contains("UP") }
                 imageView.setImageResource(
                     resources.getIdentifier(
-                        cardFacedUp.card.name,
+                        cardUp.name,
                         "drawable",
                         packageName
                     )
                 )
-                imageView.setOnClickListener {
-                    Toast.makeText(this, cardFacedUp.card.name, Toast.LENGTH_SHORT).show()
+                if (!lockActions) {
+                    if (isSetupCards) {
+                        imageView.setOnClickListener {
+                            viewModel.changeHand(cardUp)
+                        }
+                    } else if (adapter.itemCount == 0) {
+                        imageView.setOnClickListener {
+                            viewModel.addToDiscard(listOf(cardUp), preferencesViewModel.loadWildCardAsSpecial())
+                            displayTurn()
+                        }
+                    }
                 }
             } catch (e: java.lang.Exception) {
                 imageView.setImageResource(preferencesViewModel.loadDeck())
+                if (adapter.itemCount == 0 && !lockActions) {
+                    imageView.setOnClickListener {
+                        val cardDown = card.single { v -> v.position.name.contains("DOWN") }
+                        viewModel.addToDiscard(listOf(cardDown), preferencesViewModel.loadWildCardAsSpecial())
+                        displayTurn()
+                    }
+                }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(R.string.confirm_exit)
+            .setPositiveButton(
+                R.string.yes
+            ) { _, _ ->
+                super.onBackPressed()
+                finish()
+            }
+            .setNegativeButton(
+                R.string.cancel
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+        builder.create().show()
     }
 }

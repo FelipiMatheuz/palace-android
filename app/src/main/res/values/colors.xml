@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme Colors -->
     <color name="yellow_200">#FFFFF263</color>
     <color name="yellow_700">#FFFBC02D</color>
     <color name="black">#FF000000</color>
@@ -9,10 +10,17 @@
     <color name="ice">#DBF1FD</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="disabled">#55000000</color>
+    <color name="dark_gray">#FF263238</color>
 
     <!-- Player Colors   -->
     <color name="blue33">#540000FF</color>
     <color name="red33">#54FF0000</color>
     <color name="yellow33">#54FFFF00</color>
     <color name="green33">#5400FF00</color>
+
+    <!-- Position Colors -->
+    <color name="gold">#FFFFD700</color>
+    <color name="silver">#FFC0C0C0</color>
+    <color name="bronze">#FFCD7F32</color>
+
 </resources>

@@ -12,16 +12,34 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Palaceandroid">
         <activity
-                android:name="org.felipimz.palace.activity.MainActivity"
+                android:name=".activity.HelpActivity"
+                android:exported="true"/>
+        <activity
+                android:name=".activity.MenuActivity"
+                android:exported="true"
                 android:screenOrientation="userLandscape"
-                tools:ignore="LockedOrientationActivity"
-                android:exported="true">
+                tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".activity.MainActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
+        <activity
+                android:name=".activity.SettingsActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
+        <activity
+                android:name=".activity.HistoryActivity"
+                android:exported="true"
+                android:screenOrientation="userLandscape"
+                tools:ignore="LockedOrientationActivity"/>
     </application>
 
 </manifest>
