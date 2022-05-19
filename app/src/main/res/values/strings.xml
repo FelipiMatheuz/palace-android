@@ -62,6 +62,16 @@
     <string name="game_customization">You can customize your game, due to some variations of playing Palace.\n\nYou can change the deck, include Joker or not, play with one or two decks, and consider wildcards as special cards (when it\'s not considered their values).\n\nYou can change the wildcard values as well, but it is not recommended when you are learning or want play a legitimate Palace game. However, you can do it if you want to play your "own Palace game", just for fun.\n\nYou can reset the preferences anytime.</string>
     <!--multiplayer-->
     <string name="auth_failed">Failed to connect to server</string>
+    <string name="lobby_room_label">Room</string>
+    <string name="lobby_room_members">Members</string>
+    <string name="lobby_room_status">Status</string>
+    <string name="lobby_room_details">Room details</string>
+    <string name="lobby_room_settings">Room settings</string>
+    <string name="start">Start</string>
+    <string name="leave">Leave</string>
+    <string name="enter_password">Password (blank means public)</string>
+    <string name="new_room">New room</string>
+    <string name="join_room">Join room</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Game Objective</item>

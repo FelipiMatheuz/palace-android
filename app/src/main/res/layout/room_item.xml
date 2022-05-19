@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+    <TextView
+            tools:text="Test Room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_room_name"
+            android:textColor="@color/white"
+            android:layout_weight="6"
+            tools:drawableStart="@drawable/ic_lock"
+            tools:drawableTint="@color/white"/>
+
+    <TextView
+            tools:text="3/4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_room_members"
+            android:textColor="@color/white"
+            android:layout_weight="2"/>
+
+    <TextView
+            tools:text="Open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_room_status"
+            android:textColor="@color/white"
+            android:layout_weight="2"/>
+</LinearLayout>

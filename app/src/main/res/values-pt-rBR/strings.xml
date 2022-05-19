@@ -61,6 +61,16 @@
     <string name="game_customization">Você pode personalizar o seu jogo, devido à algumas variações do jogo Palace.\n\nPode mudar o baralho, incluir ou não as cartas Curingas, jogar com um ou dois baralhos e considerar os curingas como cartas especiais (quando não são considerados os seus valores).\n\nPode também alterar os valores curinga, mas não é recomendado quando está aprendendo ou quer jogar um jogo legítimo de Palace. No entanto, pode fazer isso se quiser jogar o seu "próprio jogo do Palace", apenas por diversão.\n\nVocê pode redefinir as preferências a qualquer momento.</string>
     <!--multiplayer-->
     <string name="auth_failed">Falha ao conectar ao servidor</string>
+    <string name="lobby_room_label">Sala</string>
+    <string name="lobby_room_members">Membros</string>
+    <string name="lobby_room_status">Status</string>
+    <string name="lobby_room_details">Detalhes da sala</string>
+    <string name="lobby_room_settings">Configurações da sala</string>
+    <string name="start">Iniciar</string>
+    <string name="leave">Sair</string>
+    <string name="enter_password">Senha (caso sala privada)</string>
+    <string name="new_room">Nova sala</string>
+    <string name="join_room">Entrar sala</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Objetivo do Jogo</item>

@@ -8,36 +8,6 @@
         tools:context=".activity.LobbyActivity"
         android:background="@drawable/modern_lobby">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/constraintLayout2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/disabled">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/constraintLayout"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/disabled">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,4 +18,237 @@
             android:layout_marginStart="8dp"
             android:textColor="@color/white"
             tools:text="ID: 123456789"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_lobby_rooms"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/white"
+            tools:text="Rooms: 999"/>
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/cl_rooms"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/disabled"
+            app:layout_constraintTop_toBottomOf="@+id/tv_lobby_id"
+            android:layout_marginTop="16dp"
+            app:layout_constraintVertical_bias="1.0"
+            android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp">
+
+            <TextView
+                    android:text="@string/lobby_room_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_room_label"
+                    android:textColor="@color/yellow_700"
+                    android:layout_weight="6"/>
+
+            <TextView
+                    android:text="@string/lobby_room_members"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_room_members"
+                    android:textColor="@color/yellow_700"
+                    android:layout_weight="2"/>
+
+            <TextView
+                    android:text="@string/lobby_room_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_room_status"
+                    android:textColor="@color/yellow_700"
+                    android:layout_weight="2"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/rv_rooms"
+                tools:listitem="@layout/room_item"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+        <Button
+                android:text="@string/new_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_new_room"
+                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/menu_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_join_room"/>
+
+        <Button
+                android:text="@string/join_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_join_room"
+                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/menu_button"
+                app:layout_constraintStart_toEndOf="@id/btn_new_room"
+                app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/constraintLayout"
+            app:layout_constraintStart_toEndOf="@+id/cl_rooms"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_rooms"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/disabled"
+            app:layout_constraintTop_toTopOf="@+id/cl_rooms"
+            app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+                android:text="@string/lobby_room_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_details"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/yellow_200"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+                tools:text="Member1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_member1"
+                app:layout_constraintTop_toBottomOf="@+id/tv_lobby_details"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tv_lobby_member2"
+                android:textColor="@color/white"/>
+
+        <TextView
+                tools:text="Member2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_member2"
+                app:layout_constraintTop_toTopOf="@+id/tv_lobby_member1"
+                app:layout_constraintStart_toEndOf="@+id/tv_lobby_member1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_lobby_member1"
+                android:textColor="@color/white"/>
+
+        <TextView
+                tools:text="Member3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_member3"
+                app:layout_constraintTop_toBottomOf="@id/tv_lobby_member1"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tv_lobby_member4"
+                android:textColor="@color/white"/>
+
+        <TextView
+                tools:text="Member4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_member4"
+                app:layout_constraintStart_toEndOf="@+id/tv_lobby_member3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_lobby_member3"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_lobby_member3"
+                android:textColor="@color/white"/>
+
+        <TextView
+                android:text="@string/lobby_room_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_settings"
+                app:layout_constraintTop_toBottomOf="@id/tv_lobby_member3"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/yellow_200"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        <CheckBox
+                android:text="@string/use_joker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_use_joker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_lobby_settings"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white"/>
+
+        <CheckBox
+                android:text="@string/wildcards_as_special"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_wildcard_special"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cb_use_joker"
+                android:textColor="@color/white"/>
+        <Button
+                android:text="@string/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/menu_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_leave"/>
+
+        <Button
+                android:text="@string/leave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_leave"
+                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/menu_button"
+                app:layout_constraintStart_toEndOf="@id/btn_start"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="textVisiblePassword"
+                android:id="@+id/et_password"
+                app:layout_constraintTop_toBottomOf="@+id/cb_wildcard_special"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/ice"
+                android:textAlignment="center"
+                android:hint="@string/enter_password"
+                android:textColorHint="@color/yellow_200"
+                android:textSize="16sp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
