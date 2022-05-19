@@ -87,8 +87,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_height="wrap_content">
         <Button
                 android:text="@string/new_room"
                 android:layout_width="wrap_content"
@@ -246,7 +245,8 @@
                 android:textAlignment="center"
                 android:hint="@string/enter_password"
                 android:textColorHint="@color/yellow_200"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:minHeight="48dp"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
