@@ -72,6 +72,15 @@
     <string name="enter_password">Password (blank means public)</string>
     <string name="new_room">New room</string>
     <string name="join_room">Join room</string>
+    <string name="rooms">Rooms</string>
+    <string name="create_room">Create room</string>
+    <string name="room_created">Room successfully created</string>
+    <string name="room_failed">Room creation failed</string>
+    <string name="dialog_room_name">Room Name:</string>
+    <string name="dialog_password">Password:</string>
+    <string name="dialog_option_blank">can be blank if public room</string>
+    <string name="dialog_room_name_hint">input room name here</string>
+    <string name="double_arrow">double_arrow</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Game Objective</item>

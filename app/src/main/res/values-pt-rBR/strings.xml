@@ -71,6 +71,15 @@
     <string name="enter_password">Senha (caso sala privada)</string>
     <string name="new_room">Nova sala</string>
     <string name="join_room">Entrar sala</string>
+    <string name="rooms">Salas</string>
+    <string name="create_room">Criar sala</string>
+    <string name="room_created">Sala criada com sucesso</string>
+    <string name="room_failed">Criação de sala falhou</string>
+    <string name="dialog_room_name">Nome da Sala</string>
+    <string name="dialog_password">Password:</string>
+    <string name="dialog_option_blank">pode deixar sem se a sala for pública</string>
+    <string name="dialog_room_name_hint">digite o nome da sala</string>
+    <string name="double_arrow">double_arrow</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Objetivo do Jogo</item>

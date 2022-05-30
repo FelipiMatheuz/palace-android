@@ -54,15 +54,15 @@
 
             <TextView
                     android:text="@string/lobby_room_label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_room_label"
                     android:textColor="@color/yellow_700"
-                    android:layout_weight="6"/>
+                    android:layout_weight="5"/>
 
             <TextView
                     android:text="@string/lobby_room_members"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_room_members"
                     android:textColor="@color/yellow_700"
@@ -70,11 +70,21 @@
 
             <TextView
                     android:text="@string/lobby_room_status"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_room_status"
                     android:textColor="@color/yellow_700"
-                    android:layout_weight="2"/>
+                    android:layout_weight="2"
+                    android:textAlignment="center"/>
+
+            <ImageView
+                    app:srcCompat="@drawable/ic_arrow_right"
+                    android:tint="@color/yellow_700"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_room_details"
+                    android:textColor="@color/yellow_700"
+                    android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -85,29 +95,30 @@
                 android:id="@+id/rv_rooms"
                 tools:listitem="@layout/room_item"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <Button
-                android:text="@string/new_room"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_new_room"
-                app:layout_constraintBottom_toBottomOf="parent"
-                style="@style/menu_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_join_room"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-                android:text="@string/join_room"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_join_room"
-                app:layout_constraintBottom_toBottomOf="parent"
-                style="@style/menu_button"
-                app:layout_constraintStart_toEndOf="@id/btn_new_room"
-                app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                    android:text="@string/new_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_new_room"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    style="@style/menu_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btn_join_room"/>
+
+            <Button
+                    android:text="@string/join_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_join_room"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    style="@style/menu_button"
+                    app:layout_constraintStart_toEndOf="@id/btn_new_room"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
@@ -126,11 +137,17 @@
             app:layout_constraintTop_toTopOf="@+id/cl_rooms"
             app:layout_constraintVertical_bias="1.0">
 
-        <TextView
-                android:text="@string/lobby_room_details"
+        <androidx.constraintlayout.widget.Group
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_lobby_details"
+                app:constraint_referenced_ids="tv_lobby_room_name,tv_lobby_member1,tv_lobby_member2,tv_lobby_member3,tv_lobby_member4,btn_leave"
+                android:id="@+id/lobby_details_group"/>
+
+        <TextView
+                tools:text="Room Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lobby_room_name"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/yellow_200"
@@ -142,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_lobby_member1"
-                app:layout_constraintTop_toBottomOf="@+id/tv_lobby_details"
+                app:layout_constraintTop_toBottomOf="@+id/tv_lobby_room_name"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/tv_lobby_member2"
@@ -181,6 +198,12 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_lobby_member3"
                 android:textColor="@color/white"/>
 
+        <androidx.constraintlayout.widget.Group
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_lobby_settings,cb_use_joker,cb_wildcard_special,btn_start"
+                android:id="@+id/lobby_settings_group"/>
+
         <TextView
                 android:text="@string/lobby_room_settings"
                 android:layout_width="wrap_content"
@@ -191,6 +214,7 @@
                 android:textColor="@color/yellow_200"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
+
         <CheckBox
                 android:text="@string/use_joker"
                 android:layout_width="wrap_content"
@@ -211,6 +235,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cb_use_joker"
                 android:textColor="@color/white"/>
+
         <Button
                 android:text="@string/start"
                 android:layout_width="wrap_content"
@@ -219,7 +244,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 style="@style/menu_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_leave"/>
+                app:layout_constraintEnd_toStartOf="@id/btn_leave"
+                android:visibility="gone"/>
 
         <Button
                 android:text="@string/leave"
@@ -230,23 +256,6 @@
                 style="@style/menu_button"
                 app:layout_constraintStart_toEndOf="@id/btn_start"
                 app:layout_constraintEnd_toEndOf="parent"/>
-
-        <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="textVisiblePassword"
-                android:id="@+id/et_password"
-                app:layout_constraintTop_toBottomOf="@+id/cb_wildcard_special"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="@color/ice"
-                android:textAlignment="center"
-                android:hint="@string/enter_password"
-                android:textColorHint="@color/yellow_200"
-                android:textSize="16sp"
-                android:minHeight="48dp"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
