@@ -17,7 +17,7 @@
             android:textColor="@color/white"
             android:layout_weight="5"
             tools:drawableStart="@drawable/ic_lock"
-            tools:drawableTint="@color/white"/>
+            android:drawableTint="@color/white"/>
 
     <TextView
             tools:text="3/4"

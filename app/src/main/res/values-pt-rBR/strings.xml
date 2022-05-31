@@ -80,6 +80,8 @@
     <string name="dialog_option_blank">pode deixar sem se a sala for pública</string>
     <string name="dialog_room_name_hint">digite o nome da sala</string>
     <string name="double_arrow">double_arrow</string>
+    <string name="password_fail">Senha inválida</string>
+    <string name="join">Entrar</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Objetivo do Jogo</item>

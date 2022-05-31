@@ -42,11 +42,16 @@ class LobbyAdapter(val activity: LobbyActivity) : RecyclerView.Adapter<LobbyAdap
         val room = rooms[position]
 
         holder.tvRoomName.text = room.name
+        if (room.password.trim().isNotEmpty()) {
+            holder.tvRoomName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_lock, 0, 0, 0)
+        } else {
+            holder.tvRoomName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        }
         holder.tvRoomMembers.text = "${room.members.size}/4"
         holder.tvRoomStatus.text = room.status.toString()
 
         holder.ivRoomArrow.setOnClickListener {
-            activity.listenRoomDetails(room.id)
+            activity.getRoomDetails(room.id)
         }
     }
 

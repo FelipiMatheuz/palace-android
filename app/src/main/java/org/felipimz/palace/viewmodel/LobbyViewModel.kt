@@ -16,6 +16,7 @@ class LobbyViewModel : ViewModel() {
 
     init {
         listenRooms()
+        listenRoom(null)
     }
 
     internal var getRooms: MutableLiveData<ArrayList<Room>>
@@ -57,6 +58,26 @@ class LobbyViewModel : ViewModel() {
             }
     }
 
+    private fun listenRoom(roomId: String?) {
+        if (roomId == null) {
+            _room.value = null
+        } else {
+            firestore.collection("rooms")
+                .document(roomId)
+                .addSnapshotListener { snapshot, error ->
+
+                    if (error != null) {
+                        return@addSnapshotListener
+                    }
+                    if (snapshot != null) {
+                        val room = snapshot.toObject(Room::class.java)
+                        _room.value = room
+                    }
+                }
+        }
+
+    }
+
     fun newRoom(room: Room): Boolean {
         var createdRoom = false
         firestore.collection("rooms")
@@ -65,6 +86,7 @@ class LobbyViewModel : ViewModel() {
                 room.id = it.id
                 updateRoom(room)
                 createdRoom = true
+                getRoomDetails(room.id)
             }
             .addOnFailureListener {
                 createdRoom = false
@@ -77,6 +99,13 @@ class LobbyViewModel : ViewModel() {
             .document(room.id).set(room)
     }
 
+    private fun removeRoom(roomId: String) {
+        _room.value = null
+        firestore.collection("rooms")
+            .document(roomId).delete()
+
+    }
+
     fun getRoomDetails(id: String) {
         getRoom(id)
     }
@@ -86,12 +115,27 @@ class LobbyViewModel : ViewModel() {
         roomDB.addOnSuccessListener {
             val room = it.toObject(Room::class.java)
             _room.value = room
+            listenRoom(_room.value?.id)
         }
     }
 
     fun checkStatusUser(itself: Member) {
         firestore.collection("rooms").whereArrayContains("members", itself).get().addOnSuccessListener {
             enabledCreateRoomButtom.value = it.isEmpty
+        }
+    }
+
+    fun joinRoom(room: Room, member: Member) {
+        room.members.add(member)
+        updateRoom(room)
+    }
+
+    fun leaveRoom(room: Room, member: Member) {
+        room.members.remove(member)
+        if (room.members.size == 0) {
+            removeRoom(room.id)
+        } else {
+            updateRoom(room)
         }
     }
 }

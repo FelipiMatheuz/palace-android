@@ -81,6 +81,8 @@
     <string name="dialog_option_blank">can be blank if public room</string>
     <string name="dialog_room_name_hint">input room name here</string>
     <string name="double_arrow">double_arrow</string>
+    <string name="password_fail">Invalid password</string>
+    <string name="join">Join</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Game Objective</item>

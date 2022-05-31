@@ -95,31 +95,16 @@
                 android:id="@+id/rv_rooms"
                 tools:listitem="@layout/room_item"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <Button
+                android:text="@string/new_room"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            <Button
-                    android:text="@string/new_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btn_new_room"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/menu_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/btn_join_room"/>
-
-            <Button
-                    android:text="@string/join_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btn_join_room"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/menu_button"
-                    app:layout_constraintStart_toEndOf="@id/btn_new_room"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_new_room"
+                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/menu_button"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
 
     </LinearLayout>
 
@@ -140,7 +125,7 @@
         <androidx.constraintlayout.widget.Group
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tv_lobby_room_name,tv_lobby_member1,tv_lobby_member2,tv_lobby_member3,tv_lobby_member4,btn_leave"
+                app:constraint_referenced_ids="tv_lobby_room_name,tv_lobby_member1,tv_lobby_member2,tv_lobby_member3,tv_lobby_member4,btn_join_leave"
                 android:id="@+id/lobby_details_group"/>
 
         <TextView
@@ -244,14 +229,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 style="@style/menu_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_leave"
+                app:layout_constraintEnd_toStartOf="@id/btn_join_leave"
                 android:visibility="gone"/>
 
         <Button
                 android:text="@string/leave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_leave"
+                android:id="@+id/btn_join_leave"
                 app:layout_constraintBottom_toBottomOf="parent"
                 style="@style/menu_button"
                 app:layout_constraintStart_toEndOf="@id/btn_start"
