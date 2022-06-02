@@ -41,6 +41,9 @@ class LobbyActivity : AppCompatActivity() {
         binding.rvRooms.adapter = adapter
         binding.rvRooms.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
+        binding.lobbyDetailsGroup.visibility = View.GONE
+        binding.lobbySettingsGroup.visibility = View.GONE
+
         userMember = Member(auth.uid!!, preferencesViewModel.loadNickName())
         viewModel = ViewModelProvider.NewInstanceFactory().create(LobbyViewModel::class.java)
         observeLeftScreen()
@@ -49,6 +52,21 @@ class LobbyActivity : AppCompatActivity() {
         binding.btnNewRoom.setOnClickListener {
             viewDialogNewRoom()
         }
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        syncUser()
+    }
+
+    override fun onStop() {
+        viewModel.leaveCurrentRoom(userMember)
+        super.onStop()
+    }
+
+    override fun onBackPressed() {
+        viewModel.leaveCurrentRoom(userMember)
+        super.onBackPressed()
     }
 
     private fun observeLeftScreen() {
@@ -122,6 +140,12 @@ class LobbyActivity : AppCompatActivity() {
                 binding.tvLobbySettings.text = getString(R.string.lobby_room_details)
                 binding.cbUseJoker.isEnabled = false
                 binding.cbWildcardSpecial.isEnabled = false
+                binding.cbUseJoker.setOnCheckedChangeListener { _, _ ->
+                    //Nothing
+                }
+                binding.cbWildcardSpecial.setOnCheckedChangeListener { _, _ ->
+                    //Nothing
+                }
                 binding.btnStart.visibility = View.GONE
 
                 val isMember = room.members.contains(userMember)
@@ -150,53 +174,38 @@ class LobbyActivity : AppCompatActivity() {
         dialog.setTitle(getString(R.string.new_room))
         dialog.setContentView(R.layout.dialog_new_room)
         dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
         val etNewRoomName = dialog.findViewById<EditText>(R.id.et_new_room_name)
         val etNewRoomPassword = dialog.findViewById<EditText>(R.id.et_new_room_password)
         val btnCreateNewRoom = dialog.findViewById<Button>(R.id.btn_create_room)
         btnCreateNewRoom.setOnClickListener {
-            val dialogResult = if (viewModel.newRoom(
-                    Room(
-                        name = etNewRoomName.text.toString(),
-                        password = etNewRoomPassword.text.toString(),
-                        members = mutableListOf(userMember)
-                    )
-                )
-            ) {
-                getString(R.string.room_created)
-            } else {
-                getString(R.string.room_failed)
-            }
-            Toast.makeText(this, dialogResult, Toast.LENGTH_SHORT).show()
+            viewModel.newRoom(
+                Room(
+                    name = etNewRoomName.text.toString(),
+                    password = etNewRoomPassword.text.toString(),
+                    members = mutableListOf(userMember)
+                ), this
+            )
             dialog.dismiss()
         }
         dialog.show()
     }
 
-    public override fun onStart() {
-        super.onStart()
-        syncUser()
-        syncRooms()
-    }
-
     private fun syncUser() {
         user = auth.currentUser
         if (user == null) {
-            auth.signInAnonymously()
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        user = task.result?.user
-                        getUserID()
-                    } else {
-                        Toast.makeText(
-                            baseContext, getString(R.string.auth_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        onBackPressed()
-                    }
+            auth.signInAnonymously().addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    user = task.result?.user
+                    getUserID()
+                } else {
+                    Toast.makeText(
+                        baseContext, getString(R.string.auth_failed), Toast.LENGTH_SHORT
+                    ).show()
+                    onBackPressed()
                 }
+            }
         } else {
             getUserID()
         }
@@ -219,8 +228,7 @@ class LobbyActivity : AppCompatActivity() {
         dialog.setTitle(getString(R.string.join_room))
         dialog.setContentView(R.layout.dialog_password)
         dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
         val etViewRoomPassword = dialog.findViewById<EditText>(R.id.et_view_room_password)
         val btnViewRoom = dialog.findViewById<Button>(R.id.btn_view_room)

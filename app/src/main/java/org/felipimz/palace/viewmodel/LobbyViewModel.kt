@@ -1,9 +1,13 @@
 package org.felipimz.palace.viewmodel
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import org.felipimz.palace.R
 import org.felipimz.palace.model.Member
 import org.felipimz.palace.model.Room
 
@@ -11,12 +15,14 @@ class LobbyViewModel : ViewModel() {
 
     private var _rooms = MutableLiveData<ArrayList<Room>>()
     private var _room = MutableLiveData<Room>()
+    private var userRoom: Room?
+    private var roomListener: ListenerRegistration? = null
     private var firestore = FirebaseFirestore.getInstance()
     var enabledCreateRoomButtom = MutableLiveData(true)
 
     init {
+        userRoom = null
         listenRooms()
-        listenRoom(null)
     }
 
     internal var getRooms: MutableLiveData<ArrayList<Room>>
@@ -62,7 +68,8 @@ class LobbyViewModel : ViewModel() {
         if (roomId == null) {
             _room.value = null
         } else {
-            firestore.collection("rooms")
+            roomListener?.remove()
+            roomListener = firestore.collection("rooms")
                 .document(roomId)
                 .addSnapshotListener { snapshot, error ->
 
@@ -75,23 +82,21 @@ class LobbyViewModel : ViewModel() {
                     }
                 }
         }
-
     }
 
-    fun newRoom(room: Room): Boolean {
-        var createdRoom = false
+    fun newRoom(room: Room, context: Context) {
         firestore.collection("rooms")
             .add(room)
             .addOnSuccessListener {
                 room.id = it.id
                 updateRoom(room)
-                createdRoom = true
                 getRoomDetails(room.id)
+                Toast.makeText(context, context.getString(R.string.room_created), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                createdRoom = false
+                Toast.makeText(context, context.getString(R.string.room_failed), Toast.LENGTH_SHORT).show()
             }
-        return createdRoom
+
     }
 
     fun updateRoom(room: Room) {
@@ -122,10 +127,17 @@ class LobbyViewModel : ViewModel() {
     fun checkStatusUser(itself: Member) {
         firestore.collection("rooms").whereArrayContains("members", itself).get().addOnSuccessListener {
             enabledCreateRoomButtom.value = it.isEmpty
+            userRoom = if (!it.isEmpty) {
+                val room = it.documents[0]
+                room.toObject(Room::class.java)
+            } else {
+                null
+            }
         }
     }
 
     fun joinRoom(room: Room, member: Member) {
+        leaveCurrentRoom(member)
         room.members.add(member)
         updateRoom(room)
     }
@@ -136,6 +148,12 @@ class LobbyViewModel : ViewModel() {
             removeRoom(room.id)
         } else {
             updateRoom(room)
+        }
+    }
+
+    fun leaveCurrentRoom(member: Member) {
+        if (userRoom != null) {
+            leaveRoom(userRoom!!, member)
         }
     }
 }
