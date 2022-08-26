@@ -6,7 +6,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        android:layout_marginEnd="-20dp">
+        android:layout_marginEnd="-20dp"
+        android:id="@+id/card_layout">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/card_cv"
@@ -22,7 +23,7 @@
                 android:contentDescription="@string/card_item"
                 android:id="@+id/card_item"
                 android:layout_gravity="center"
-                tools:src="@drawable/ace_of_hearts">
+                tools:src="@drawable/ace_of_clubs">
         </ImageView>
     </androidx.cardview.widget.CardView>
 

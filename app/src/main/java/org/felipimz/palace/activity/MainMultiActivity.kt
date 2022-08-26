@@ -11,28 +11,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.felipimz.palace.R
-import org.felipimz.palace.adapter.CardHandAdapter
+import org.felipimz.palace.adapter.CardHandMultiAdapter
 import org.felipimz.palace.databinding.ActivityMainBinding
-import org.felipimz.palace.model.Card
-import org.felipimz.palace.model.Owner
-import org.felipimz.palace.model.Position
+import org.felipimz.palace.model.*
+import org.felipimz.palace.viewmodel.MainMultiViewModel
 import org.felipimz.palace.viewmodel.PreferencesViewModel
-import org.felipimz.palace.viewmodel.MainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainMultiActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var viewModel: MainViewModel
+    lateinit var viewModel: MainMultiViewModel
     lateinit var preferencesViewModel: PreferencesViewModel
 
-    private lateinit var cardHandAdapter1: CardHandAdapter
-    private lateinit var cardHandAdapter2: CardHandAdapter
-    private lateinit var cardHandAdapter3: CardHandAdapter
-    private lateinit var cardHandAdapter4: CardHandAdapter
+    private lateinit var cardHandAdapter1: CardHandMultiAdapter
+    private lateinit var cardHandAdapter2: CardHandMultiAdapter
+    private lateinit var cardHandAdapter3: CardHandMultiAdapter
+    private lateinit var cardHandAdapter4: CardHandMultiAdapter
 
     var lockActions: Boolean = false
     var isSetupCards: Boolean = true
-    private var lockBot: Boolean = false
+    var allSet: Boolean = false
+    private var playerOnwer = -1
+    private var owners = listOf<Owner>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,32 +42,48 @@ class MainActivity : AppCompatActivity() {
 
         preferencesViewModel = PreferencesViewModel(this)
 
-        viewModel = ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
-        viewModel.distributeCard(
-            preferencesViewModel.loadDeckWithJoker(),
-            preferencesViewModel.loadRules(),
-            preferencesViewModel.loadDoubleDeck()
-        )
+        viewModel = ViewModelProvider.NewInstanceFactory().create(MainMultiViewModel::class.java)
+        viewModel.listenRoom(intent.extras!!.getString("room_id")!!, this)
+        loadGame()
+    }
 
-        loadGameSetup()
-        viewModel.deck.observe(this) { value: MutableList<Card> ->
-            loadPiles(value)
-            loadHands(value)
-            loadTable(value)
-            checkWinner(value)
+    fun loadGame() {
+        playerOnwer = viewModel.shufflePlayers(intent.extras!!.getString("player_id")!!)
+        loadOwners()
+        if (playerOnwer == 0) {
+            viewModel.distributeCard()
         }
+        loadGameSetup()
+        viewModel.getRoom.observe(this) { value: Room ->
+            if (!allSet) {
+                val countReadyPlayers = value.members.filter { it.status == Status.READY }.size
+                if (countReadyPlayers == value.members.size) {
+                    allSet = true
+                    displayTurn()
+                }
+            }
+            if(value.deck.isNotEmpty()){
+                loadPiles(value.deck)
+                loadHands(value.deck)
+                loadTable(value.deck)
+                checkWinner(value.deck)
+            }
+        }
+    }
 
+    private fun loadOwners() {
+        owners = getOnwers(playerOnwer)
     }
 
     private fun checkWinner(value: MutableList<Card>) {
         val countPlayer1 = value.filter { card -> card.owner == Owner.PLAYER1 }.size
         val countPlayer2 = value.filter { card -> card.owner == Owner.PLAYER2 }.size
-        val countPlayer3 = if (preferencesViewModel.loadDoubleDeck()) {
+        val countPlayer3 = if (intent.extras!!.getBoolean("double")) {
             value.filter { card -> card.owner == Owner.PLAYER3 }.size
         } else {
             99
         }
-        val countPlayer4 = if (preferencesViewModel.loadDoubleDeck()) {
+        val countPlayer4 = if (intent.extras!!.getBoolean("double")) {
             value.filter { card -> card.owner == Owner.PLAYER4 }.size
         } else {
             99
@@ -76,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         if (countPlayer1 == 0 || countPlayer2 == 0 || countPlayer3 == 0 || countPlayer4 == 0) {
             displayWinner(intArrayOf(countPlayer1, countPlayer2, countPlayer3, countPlayer4))
             lockActions = true
-            lockBot = true
         }
     }
 
@@ -91,39 +106,38 @@ class MainActivity : AppCompatActivity() {
             binding.confirmSetup.setOnClickListener {
                 it.visibility = View.GONE
                 isSetupCards = false
-                displayTurn()
+                viewModel.updateStatus(playerOnwer)
             }
         }
     }
 
     fun displayTurn() {
         viewModel.viewModelScope.launch {
-            binding.messageTable.text = when (viewModel.currentTurn) {
-                1 -> "${getString(R.string.turn)} ${preferencesViewModel.loadNickName()}"
-                else -> "${getString(R.string.bot_turn)}${viewModel.currentTurn}"
-            }
-            lockActions = viewModel.currentTurn != 1
+            binding.messageTable.text = viewModel.displayPlayer(this@MainMultiActivity)
+            lockActions = viewModel.currentTurn != playerOnwer
             delay(1500)
             binding.messageTable.text = ""
-            val display = viewModel.getCard(preferencesViewModel.loadWildCardAsSpecial(), lockBot)
-
-            if (display) {
-                displayTurn()
-            }
+            viewModel.getCard()
         }
     }
 
     private fun displayWinner(sizes: IntArray) {
         viewModel.viewModelScope.launch {
-            val player = sizes.indexOf(0) + 1
-            binding.messageTable.text = when (player) {
-                1 -> "${getString(R.string.winner)} ${preferencesViewModel.loadNickName()}"
-                else -> "${getString(R.string.bot_winner)}${player}"
-            }
+            binding.messageTable.text = viewModel.displayWinner(this@MainMultiActivity, sizes.indexOf(0))
             delay(1500)
-            viewModel.recordHistory(sizes, "single", this@MainActivity)
+            viewModel.recordHistory(sizes, "multi", this@MainMultiActivity)
+            viewModel.closeRoom()
             super.onBackPressed()
             finish()
+        }
+    }
+
+    private fun getOnwers(index: Int): List<Owner> {
+        return when (index) {
+            0 -> listOf(Owner.PLAYER1, Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4)
+            1 -> listOf(Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1)
+            2 -> listOf(Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1, Owner.PLAYER2)
+            else -> listOf()
         }
     }
 
@@ -155,13 +169,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadHands(value: MutableList<Card>) {
-        cardHandAdapter1 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER1 && it.position.name.contains("HAND") }.sortedBy { it.value },
+        cardHandAdapter1 = CardHandMultiAdapter(
+            value.filter { it.owner == owners[0] && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
-        cardHandAdapter2 = CardHandAdapter(
-            value.filter { it.owner == Owner.PLAYER2 && it.position.name.contains("HAND") }.sortedBy { it.value },
+        cardHandAdapter2 = CardHandMultiAdapter(
+            value.filter { it.owner == owners[1] && it.position.name.contains("HAND") }.sortedBy { it.value },
             true,
             this
         )
@@ -174,14 +188,14 @@ class MainActivity : AppCompatActivity() {
         binding.poolPlayer1.adapter = cardHandAdapter1
         binding.poolPlayer2.adapter = cardHandAdapter2
 
-        if (preferencesViewModel.loadDoubleDeck()) {
-            cardHandAdapter3 = CardHandAdapter(
-                value.filter { it.owner == Owner.PLAYER3 && it.position.name.contains("HAND") }.sortedBy { it.value },
+        if (intent.extras!!.getBoolean("double")) {
+            cardHandAdapter3 = CardHandMultiAdapter(
+                value.filter { it.owner == owners[2] && it.position.name.contains("HAND") }.sortedBy { it.value },
                 false,
                 this
             )
-            cardHandAdapter4 = CardHandAdapter(
-                value.filter { it.owner == Owner.PLAYER4 && it.position.name.contains("HAND") }.sortedBy { it.value },
+            cardHandAdapter4 = CardHandMultiAdapter(
+                value.filter { it.owner == owners[3] && it.position.name.contains("HAND") }.sortedBy { it.value },
                 false,
                 this
             )
@@ -200,11 +214,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadTable(value: MutableList<Card>) {
-        setupTable(1, value.filter { it.owner == Owner.PLAYER1 })
-        setupTable(2, value.filter { it.owner == Owner.PLAYER2 })
-        if (preferencesViewModel.loadDoubleDeck()) {
-            setupTable(3, value.filter { it.owner == Owner.PLAYER3 })
-            setupTable(4, value.filter { it.owner == Owner.PLAYER4 })
+        setupTable(1, value.filter { it.owner == owners[0] })
+        setupTable(2, value.filter { it.owner == owners[1] })
+        if (intent.extras!!.getBoolean("double")) {
+            setupTable(3, value.filter { it.owner == owners[2] })
+            setupTable(4, value.filter { it.owner == owners[3] })
         } else {
             binding.cardView1Player3.visibility = View.GONE
             binding.cardView2Player3.visibility = View.GONE
@@ -247,7 +261,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun changeImage(card: List<Card>, imageView: ImageView, adapter: CardHandAdapter) {
+    private fun changeImage(card: List<Card>, imageView: ImageView, adapter: CardHandMultiAdapter) {
         if (card.isEmpty()) {
             imageView.setImageResource(0)
             imageView.isEnabled = false
@@ -268,7 +282,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else if (adapter.itemCount == 0) {
                         imageView.setOnClickListener {
-                            viewModel.addToDiscard(listOf(cardUp), preferencesViewModel.loadWildCardAsSpecial())
+                            viewModel.addToDiscard(listOf(cardUp), intent.extras!!.getBoolean("special"))
                             displayTurn()
                         }
                     }
@@ -278,7 +292,7 @@ class MainActivity : AppCompatActivity() {
                 if (adapter.itemCount == 0 && !lockActions) {
                     imageView.setOnClickListener {
                         val cardDown = card.single { v -> v.position.name.contains("DOWN") }
-                        viewModel.addToDiscard(listOf(cardDown), preferencesViewModel.loadWildCardAsSpecial())
+                        viewModel.addToDiscard(listOf(cardDown), intent.extras!!.getBoolean("special"))
                         displayTurn()
                     }
                 }

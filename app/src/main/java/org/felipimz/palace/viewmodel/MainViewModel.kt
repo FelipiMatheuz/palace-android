@@ -402,12 +402,12 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun recordHistory(sizes: IntArray, context: Context) {
+    fun recordHistory(sizes: IntArray, gameMode: String, context: Context) {
         val player1size = sizes[0]
         sizes.sort()
         val history = History(
             sizes.indexOf(player1size) + 1,
-            "single",
+            gameMode,
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
         )
         val historyViewModel = HistoryViewModel(context)

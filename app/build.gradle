@@ -11,15 +11,16 @@ android {
         applicationId "org.felipimz.palace_android"
         minSdk 26
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -34,6 +35,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'org.felipimz.palace'
 }
 
 dependencies {

@@ -10,6 +10,7 @@ import com.google.firebase.firestore.Query
 import org.felipimz.palace.R
 import org.felipimz.palace.model.Member
 import org.felipimz.palace.model.Room
+import org.felipimz.palace.model.Status
 
 class LobbyViewModel : ViewModel() {
 
@@ -102,13 +103,15 @@ class LobbyViewModel : ViewModel() {
     fun updateRoom(room: Room) {
         firestore.collection("rooms")
             .document(room.id).set(room)
+        if (room.id == userRoom?.id) {
+            userRoom = room
+        }
     }
 
     private fun removeRoom(roomId: String) {
         _room.value = null
         firestore.collection("rooms")
             .document(roomId).delete()
-
     }
 
     fun getRoomDetails(id: String) {
@@ -139,7 +142,14 @@ class LobbyViewModel : ViewModel() {
     fun joinRoom(room: Room, member: Member) {
         leaveCurrentRoom(member)
         room.members.add(member)
+        room.status = updateRoomStatus(room)
         updateRoom(room)
+    }
+
+    private fun updateRoomStatus(room: Room) = when (room.members.size) {
+        2 -> Status.READY
+        4 -> Status.FULL
+        else -> Status.OPEN
     }
 
     fun leaveRoom(room: Room, member: Member) {
@@ -147,6 +157,7 @@ class LobbyViewModel : ViewModel() {
         if (room.members.size == 0) {
             removeRoom(room.id)
         } else {
+            room.status = updateRoomStatus(room)
             updateRoom(room)
         }
     }
@@ -155,5 +166,13 @@ class LobbyViewModel : ViewModel() {
         if (userRoom != null) {
             leaveRoom(userRoom!!, member)
         }
+    }
+
+    fun isGameStarted(): Boolean {
+        return userRoom?.status == Status.GAME
+    }
+
+    fun getGameId(): String{
+        return userRoom!!.id
     }
 }

@@ -7,5 +7,6 @@ data class Room(
     var members: MutableList<Member> = mutableListOf(),
     var deckWithJokerMultiplayer: Boolean = true,
     var wildcardAsSpecialMultiplayer: Boolean = false,
-    var status: Status = Status.OPEN
+    var status: Status = Status.OPEN,
+    var deck: MutableList<Card> = mutableListOf()
 )

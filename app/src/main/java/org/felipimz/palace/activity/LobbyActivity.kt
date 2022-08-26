@@ -1,6 +1,7 @@
 package org.felipimz.palace.activity
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import org.felipimz.palace.adapter.LobbyAdapter
 import org.felipimz.palace.databinding.ActivityLobbyBinding
 import org.felipimz.palace.model.Member
 import org.felipimz.palace.model.Room
+import org.felipimz.palace.model.Status
 import org.felipimz.palace.viewmodel.LobbyViewModel
 import org.felipimz.palace.viewmodel.PreferencesViewModel
 
@@ -29,6 +31,7 @@ class LobbyActivity : AppCompatActivity() {
     private lateinit var preferencesViewModel: PreferencesViewModel
     private var user: FirebaseUser? = null
     private lateinit var userMember: Member
+    private var isPlaying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,6 @@ class LobbyActivity : AppCompatActivity() {
         binding.lobbyDetailsGroup.visibility = View.GONE
         binding.lobbySettingsGroup.visibility = View.GONE
 
-        userMember = Member(auth.uid!!, preferencesViewModel.loadNickName())
         viewModel = ViewModelProvider.NewInstanceFactory().create(LobbyViewModel::class.java)
         observeLeftScreen()
         observeRightScreen()
@@ -60,7 +62,9 @@ class LobbyActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        viewModel.leaveCurrentRoom(userMember)
+        if (!isPlaying) {
+            viewModel.leaveCurrentRoom(userMember)
+        }
         super.onStop()
     }
 
@@ -74,6 +78,14 @@ class LobbyActivity : AppCompatActivity() {
             adapter.updateList(it)
             syncRooms()
             viewModel.checkStatusUser(userMember)
+            if (viewModel.isGameStarted()) {
+                isPlaying = true
+                val multiplayerIntent = Intent(this, MainMultiActivity::class.java)
+                multiplayerIntent.putExtra("room_id", viewModel.getGameId())
+                multiplayerIntent.putExtra("player_id", auth.uid!!)
+                startActivity(multiplayerIntent)
+                finish()
+            }
         }
 
         viewModel.enabledCreateRoomButtom.observe(this) {
@@ -130,7 +142,16 @@ class LobbyActivity : AppCompatActivity() {
                     room.wildcardAsSpecialMultiplayer = isChecked
                     viewModel.updateRoom(room)
                 }
-                binding.btnStart.visibility = View.VISIBLE
+                binding.btnStart.visibility = if (room.status != Status.OPEN) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+                binding.btnStart.setOnClickListener {
+                    room.status = Status.GAME
+                    viewModel.updateRoom(room)
+                }
 
                 binding.btnJoinLeave.text = getString(R.string.leave)
                 binding.btnJoinLeave.setOnClickListener {
@@ -158,7 +179,9 @@ class LobbyActivity : AppCompatActivity() {
                 } else {
                     binding.btnJoinLeave.text = getString(R.string.join_room)
                     binding.btnJoinLeave.setOnClickListener {
-                        if (room.password.trim().isNotEmpty()) {
+                        if (room.members.size == 4) {
+                            Toast.makeText(this, getString(R.string.room_full), Toast.LENGTH_SHORT).show()
+                        } else if (room.password.trim().isNotEmpty()) {
                             viewDialogViewRoom(room)
                         } else {
                             viewModel.joinRoom(room, userMember)
@@ -212,6 +235,7 @@ class LobbyActivity : AppCompatActivity() {
     }
 
     private fun getUserID() {
+        userMember = Member(auth.uid!!, preferencesViewModel.loadNickName())
         binding.tvLobbyId.text = "ID: ${userMember.displayName}#${userMember.id.substring(0, 5)}"
     }
 

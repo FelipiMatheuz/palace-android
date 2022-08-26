@@ -82,6 +82,7 @@
     <string name="double_arrow">double_arrow</string>
     <string name="password_fail">Senha inválida</string>
     <string name="join">Entrar</string>
+    <string name="room_full">Sala cheia</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Objetivo do Jogo</item>

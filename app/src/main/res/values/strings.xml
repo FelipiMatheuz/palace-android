@@ -83,6 +83,7 @@
     <string name="double_arrow">double_arrow</string>
     <string name="password_fail">Invalid password</string>
     <string name="join">Join</string>
+    <string name="room_full">Room is full</string>
     <!--string arrays-->
     <string-array name="help_topics_array">
         <item>Game Objective</item>

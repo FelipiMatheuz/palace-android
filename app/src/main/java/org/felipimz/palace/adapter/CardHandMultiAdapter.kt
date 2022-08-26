@@ -1,26 +1,26 @@
 package org.felipimz.palace.adapter
 
 import android.annotation.SuppressLint
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginBottom
-import androidx.core.view.marginEnd
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import org.felipimz.palace.R
-import org.felipimz.palace.activity.MainActivity
+import org.felipimz.palace.activity.MainMultiActivity
 import org.felipimz.palace.model.Card
 import org.felipimz.palace.model.Owner
 import org.felipimz.palace.model.Position
 
-class CardHandAdapter(private var listCard: List<Card>, private val orientation: Boolean, val activity: MainActivity) :
-    RecyclerView.Adapter<CardHandAdapter.CardHandHolder>() {
+class CardHandMultiAdapter(
+    private var listCard: List<Card>,
+    private val orientation: Boolean,
+    val activity: MainMultiActivity
+) :
+    RecyclerView.Adapter<CardHandMultiAdapter.CardHandHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHandHolder {
 
@@ -47,18 +47,10 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
             holder.ivCardItem.setImageResource(activity.preferencesViewModel.loadDeck())
         }
         holder.cvCard.foreground = if (card.position == Position.HAND_CLICKED) {
-            activity.getDrawable(R.drawable.highlight)
-
+            AppCompatResources.getDrawable(activity, R.drawable.highlight)
         } else {
             null
         }
-        val param = holder.layoutCard.layoutParams as ViewGroup.MarginLayoutParams
-        param.marginEnd = if (card.position == Position.HAND_CLICKED) {
-            0
-        } else {
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -20f, activity.resources.displayMetrics).toInt()
-        }
-        holder.layoutCard.layoutParams = param
 
         if (listCard.isNotEmpty() && card.owner == Owner.PLAYER1 && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
@@ -103,6 +95,5 @@ class CardHandAdapter(private var listCard: List<Card>, private val orientation:
     class CardHandHolder(view: View) : RecyclerView.ViewHolder(view) {
         var ivCardItem: ImageView = view.findViewById(R.id.card_item)
         var cvCard: CardView = view.findViewById(R.id.card_cv)
-        var layoutCard: ConstraintLayout = view.findViewById(R.id.card_layout)
     }
 }
