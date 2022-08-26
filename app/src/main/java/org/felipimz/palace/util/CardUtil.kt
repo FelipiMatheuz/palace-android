@@ -63,11 +63,6 @@ class CardUtil {
         Card("ace_of_clubs", 14)
     )
 
-    private val additionalInfo: Map<String, Int> = mapOf(
-        "discarded_top_value" to 0,
-        "discarded_top_times" to 0
-    )
-
     fun getDefaultDeck(hasJoker: Boolean, doubleDeck: Boolean): MutableList<Card> {
         if (!hasJoker) {
             val eights = deck.filter { f ->
@@ -133,9 +128,5 @@ class CardUtil {
             }
         }
         return deck
-    }
-
-    fun loadAdditionalInfo(): Map<String, Int> {
-        return additionalInfo
     }
 }

@@ -14,8 +14,8 @@ import org.felipimz.palace.model.Status
 
 class LobbyViewModel : ViewModel() {
 
-    private var _rooms = MutableLiveData<ArrayList<Room>>()
-    private var _room = MutableLiveData<Room>()
+    internal var rooms = MutableLiveData<ArrayList<Room>>()
+    internal var room = MutableLiveData<Room?>()
     private var userRoom: Room?
     private var roomListener: ListenerRegistration? = null
     private var firestore = FirebaseFirestore.getInstance()
@@ -25,22 +25,6 @@ class LobbyViewModel : ViewModel() {
         userRoom = null
         listenRooms()
     }
-
-    internal var getRooms: MutableLiveData<ArrayList<Room>>
-        get() {
-            return _rooms
-        }
-        set(value) {
-            _rooms.value
-        }
-
-    internal var getRoom: MutableLiveData<Room>
-        get() {
-            return _room
-        }
-        set(value) {
-            _room.value
-        }
 
     private fun listenRooms() {
         firestore.collection("rooms")
@@ -61,13 +45,13 @@ class LobbyViewModel : ViewModel() {
                         rooms.add(room)
                     }
                 }
-                _rooms.value = rooms
+                this.rooms.value = rooms
             }
     }
 
     private fun listenRoom(roomId: String?) {
         if (roomId == null) {
-            _room.value = null
+            room.value = null
         } else {
             roomListener?.remove()
             roomListener = firestore.collection("rooms")
@@ -79,7 +63,7 @@ class LobbyViewModel : ViewModel() {
                     }
                     if (snapshot != null) {
                         val room = snapshot.toObject(Room::class.java)
-                        _room.value = room
+                        this.room.value = room
                     }
                 }
         }
@@ -109,7 +93,7 @@ class LobbyViewModel : ViewModel() {
     }
 
     private fun removeRoom(roomId: String) {
-        _room.value = null
+        room.value = null
         firestore.collection("rooms")
             .document(roomId).delete()
     }
@@ -122,8 +106,8 @@ class LobbyViewModel : ViewModel() {
         val roomDB = firestore.collection("rooms").document(id).get()
         roomDB.addOnSuccessListener {
             val room = it.toObject(Room::class.java)
-            _room.value = room
-            listenRoom(_room.value?.id)
+            this.room.value = room
+            listenRoom(this.room.value?.id)
         }
     }
 

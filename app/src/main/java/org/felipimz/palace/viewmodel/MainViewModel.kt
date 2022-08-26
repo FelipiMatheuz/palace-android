@@ -15,12 +15,14 @@ class MainViewModel : ViewModel() {
     private val cardUtil = CardUtil()
     var currentTurn: Int = 1
     var lastPlayer: Int = 4
-    private val additionalInfo: Map<String, Int>
+
+    //first value: card value; second value: quantity on top
+    private val additionalInfo: MutableList<Int>
     private var reverse: Boolean = false
 
     init {
         deck.value = mutableListOf()
-        additionalInfo = cardUtil.loadAdditionalInfo()
+        additionalInfo = mutableListOf(0, 0)
     }
 
     fun distributeCard(deckWithJoker: Boolean, rules: String, doubleDeck: Boolean) {
@@ -107,14 +109,14 @@ class MainViewModel : ViewModel() {
                 addToBurn()
                 burned = true
             } else {
-                if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
-                    additionalInfo["discarded_top_value"] to listTarget[0].value
-                    additionalInfo["discarded_top_times"] to 1
+                if (additionalInfo[0] != listTarget[0].value) {
+                    additionalInfo[0] = listTarget[0].value
+                    additionalInfo[1] = 1
                 } else {
-                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
+                    additionalInfo[1] = additionalInfo[1] + listTarget.size
                 }
 
-                if (additionalInfo["discarded_top_times"]!! >= 4) {
+                if (additionalInfo[1] >= 4) {
                     addToBurn()
                 }
             }
@@ -156,8 +158,8 @@ class MainViewModel : ViewModel() {
                 it.position = Position.HAND
             }
         }
-        additionalInfo["discarded_top_value"] to 0
-        additionalInfo["discarded_top_times"] to 0
+        additionalInfo[0] = 0
+        additionalInfo[1] = 0
     }
 
     private fun addToBurn() {
@@ -167,8 +169,8 @@ class MainViewModel : ViewModel() {
                 it.position = Position.NONE
             }
         }
-        additionalInfo["discarded_top_value"] to 0
-        additionalInfo["discarded_top_times"] to 0
+        additionalInfo[0] = 0
+        additionalInfo[1] = 0
     }
 
     private fun validateDiscard(target: Card, previous: Card?, ignoreValueWildCards: Boolean): Boolean {

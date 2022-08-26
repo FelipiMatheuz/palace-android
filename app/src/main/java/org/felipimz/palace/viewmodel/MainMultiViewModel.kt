@@ -16,29 +16,21 @@ class MainMultiViewModel : ViewModel() {
     //global deck
     private val _deck = MutableLiveData<MutableList<Card>>()
     private val cardUtil = CardUtil()
-    private var _room = MutableLiveData<Room>()
+    internal var room = MutableLiveData<Room?>()
     var currentTurn: Int = 1
-    var lastPlayer: Int = 4
-    private val additionalInfo: Map<String, Int>
+    private var lastPlayer: Int = 4
+    private val additionalInfo: MutableList<Int>
     private var reverse: Boolean = false
     private var firestore = FirebaseFirestore.getInstance()
 
     init {
         _deck.value = mutableListOf()
-        additionalInfo = cardUtil.loadAdditionalInfo()
+        additionalInfo = mutableListOf(0, 0)
     }
-
-    internal var getRoom: MutableLiveData<Room>
-        get() {
-            return _room
-        }
-        set(value) {
-            _room.value
-        }
 
     fun distributeCard() {
         //init deck and shuffle
-        firestore.collection("rooms").document(_room.value?.id!!).get()
+        firestore.collection("rooms").document(room.value?.id!!).get()
             .addOnSuccessListener {
                 val room = it.toObject(Room::class.java)
                 val doubleDeck = room!!.members.size == 4
@@ -123,14 +115,14 @@ class MainMultiViewModel : ViewModel() {
                 addToBurn()
                 burned = true
             } else {
-                if (additionalInfo["discarded_top_value"] != listTarget[0].value) {
-                    additionalInfo["discarded_top_value"] to listTarget[0].value
-                    additionalInfo["discarded_top_times"] to 1
+                if (additionalInfo[0] != listTarget[0].value) {
+                    additionalInfo[0] = listTarget[0].value
+                    additionalInfo[1] = 1
                 } else {
-                    additionalInfo["discarded_top_times"] to additionalInfo["discarded_top_times"]?.plus(listTarget.size)
+                    additionalInfo[1] = additionalInfo[1] + listTarget.size
                 }
 
-                if (additionalInfo["discarded_top_times"]!! >= 4) {
+                if (additionalInfo[1] >= 4) {
                     addToBurn()
                 }
             }
@@ -172,8 +164,8 @@ class MainMultiViewModel : ViewModel() {
                 it.position = Position.HAND
             }
         }
-        additionalInfo["discarded_top_value"] to 0
-        additionalInfo["discarded_top_times"] to 0
+        additionalInfo[0] = 0
+        additionalInfo[1] = 0
     }
 
     private fun addToBurn() {
@@ -183,8 +175,8 @@ class MainMultiViewModel : ViewModel() {
                 it.position = Position.NONE
             }
         }
-        additionalInfo["discarded_top_value"] to 0
-        additionalInfo["discarded_top_times"] to 0
+        additionalInfo[0] = 0
+        additionalInfo[1] = 0
     }
 
     private fun validateDiscard(target: Card, previous: Card?, ignoreValueWildCards: Boolean): Boolean {
@@ -243,10 +235,10 @@ class MainMultiViewModel : ViewModel() {
     }
 
     fun shufflePlayers(playerId: String): Int {
-        _room.value?.members = _room.value?.members?.shuffled()?.toMutableList()!!
-        updateRoom(_room.value!!)
+        room.value?.members = room.value?.members?.shuffled()?.toMutableList()!!
+        updateRoom(room.value!!)
 
-        return _room.value!!.members.indexOf(_room.value!!.members.filter { f -> f.id == playerId }[0]) + 1
+        return room.value!!.members.indexOf(room.value!!.members.filter { f -> f.id == playerId }[0]) + 1
     }
 
     private fun updateRoom(room: Room) {
@@ -264,7 +256,7 @@ class MainMultiViewModel : ViewModel() {
                 }
                 if (snapshot != null) {
                     val room = snapshot.toObject(Room::class.java)
-                    _room.value = room
+                    this.room.value = room
                     activity.loadGame()
                 }
             }
@@ -272,21 +264,21 @@ class MainMultiViewModel : ViewModel() {
     }
 
     fun displayPlayer(context: Context): String {
-        return "${context.getString(R.string.turn)} ${_room.value?.members?.get(currentTurn - 1)}"
+        return "${context.getString(R.string.turn)} ${room.value?.members?.get(currentTurn - 1)}"
     }
 
     fun displayWinner(context: Context, index: Int): String {
-        return "${context.getString(R.string.winner)} ${_room.value?.members?.get(index)}"
+        return "${context.getString(R.string.winner)} ${room.value?.members?.get(index)}"
     }
 
     fun updateStatus(playerOnwer: Int) {
-        _room.value!!.members[playerOnwer].status = Status.READY
-        updateRoom(_room.value!!)
+        room.value!!.members[playerOnwer].status = Status.READY
+        updateRoom(room.value!!)
     }
 
     fun closeRoom() {
         firestore.collection("rooms")
-            .document(_room.value!!.id).delete()
-        _room.value = null
+            .document(room.value!!.id).delete()
+        room.value = null
     }
 }

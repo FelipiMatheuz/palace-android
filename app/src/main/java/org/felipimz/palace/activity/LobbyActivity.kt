@@ -74,7 +74,7 @@ class LobbyActivity : AppCompatActivity() {
     }
 
     private fun observeLeftScreen() {
-        viewModel.getRooms.observe(this) {
+        viewModel.rooms.observe(this) {
             adapter.updateList(it)
             syncRooms()
             viewModel.checkStatusUser(userMember)
@@ -98,7 +98,7 @@ class LobbyActivity : AppCompatActivity() {
     }
 
     private fun observeRightScreen() {
-        viewModel.getRoom.observe(this) { room ->
+        viewModel.room.observe(this) { room ->
 
             if (room == null || room.id.isEmpty()) {
                 binding.lobbyDetailsGroup.visibility = View.GONE

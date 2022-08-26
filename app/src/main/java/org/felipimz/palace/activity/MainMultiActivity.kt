@@ -30,7 +30,7 @@ class MainMultiActivity : AppCompatActivity() {
 
     var lockActions: Boolean = false
     var isSetupCards: Boolean = true
-    var allSet: Boolean = false
+    private var allSet: Boolean = false
     private var playerOnwer = -1
     private var owners = listOf<Owner>()
 
@@ -54,7 +54,10 @@ class MainMultiActivity : AppCompatActivity() {
             viewModel.distributeCard()
         }
         loadGameSetup()
-        viewModel.getRoom.observe(this) { value: Room ->
+        viewModel.room.observe(this) { value: Room? ->
+            if (value == null) {
+                return@observe
+            }
             if (!allSet) {
                 val countReadyPlayers = value.members.filter { it.status == Status.READY }.size
                 if (countReadyPlayers == value.members.size) {
@@ -62,7 +65,7 @@ class MainMultiActivity : AppCompatActivity() {
                     displayTurn()
                 }
             }
-            if(value.deck.isNotEmpty()){
+            if (value.deck.isNotEmpty()) {
                 loadPiles(value.deck)
                 loadHands(value.deck)
                 loadTable(value.deck)
@@ -243,16 +246,19 @@ class MainMultiActivity : AppCompatActivity() {
                 changeImage(centerPilar, binding.card2Player1, cardHandAdapter1)
                 changeImage(rightPilar, binding.card3Player1, cardHandAdapter1)
             }
+
             2 -> {
                 changeImage(leftPilar, binding.card1Player2, cardHandAdapter2)
                 changeImage(centerPilar, binding.card2Player2, cardHandAdapter2)
                 changeImage(rightPilar, binding.card3Player2, cardHandAdapter2)
             }
+
             3 -> {
                 changeImage(leftPilar, binding.card1Player3, cardHandAdapter3)
                 changeImage(centerPilar, binding.card2Player3, cardHandAdapter3)
                 changeImage(rightPilar, binding.card3Player3, cardHandAdapter3)
             }
+
             4 -> {
                 changeImage(leftPilar, binding.card1Player4, cardHandAdapter4)
                 changeImage(centerPilar, binding.card2Player4, cardHandAdapter4)
