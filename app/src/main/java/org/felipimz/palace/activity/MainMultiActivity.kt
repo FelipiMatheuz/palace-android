@@ -31,8 +31,9 @@ class MainMultiActivity : AppCompatActivity() {
     var lockActions: Boolean = false
     var isSetupCards: Boolean = true
     private var allSet: Boolean = false
-    private var playerOnwer = -1
     private var owners = listOf<Owner>()
+    private var playerPosition = -1
+    private var isRoomOwner = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,14 +45,16 @@ class MainMultiActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider.NewInstanceFactory().create(MainMultiViewModel::class.java)
         viewModel.listenRoom(intent.extras!!.getString("room_id")!!, this)
-        loadGame()
     }
 
     fun loadGame() {
-        playerOnwer = viewModel.shufflePlayers(intent.extras!!.getString("player_id")!!)
-        loadOwners()
-        if (playerOnwer == 0) {
+        isRoomOwner = viewModel.room.value!!.members.indexOf(viewModel.room.value!!.members.filter { f ->
+            f.id == intent.extras!!.getString("player_id")
+        }[0]) == 0
+        if (isRoomOwner) {
             viewModel.distributeCard()
+            viewModel.shufflePlayers()
+            loadOwners()
         }
         loadGameSetup()
         viewModel.room.observe(this) { value: Room? ->
@@ -75,7 +78,10 @@ class MainMultiActivity : AppCompatActivity() {
     }
 
     private fun loadOwners() {
-        owners = getOnwers(playerOnwer)
+        playerPosition = viewModel.room.value!!.members.indexOf(viewModel.room.value!!.members.filter { f ->
+            f.id == intent.extras!!.getString("player_id")
+        }[0])
+        owners = getDisplayDistribution()
     }
 
     private fun checkWinner(value: MutableList<Card>) {
@@ -109,7 +115,7 @@ class MainMultiActivity : AppCompatActivity() {
             binding.confirmSetup.setOnClickListener {
                 it.visibility = View.GONE
                 isSetupCards = false
-                viewModel.updateStatus(playerOnwer)
+                viewModel.updateStatus(playerPosition)
             }
         }
     }
@@ -117,7 +123,7 @@ class MainMultiActivity : AppCompatActivity() {
     fun displayTurn() {
         viewModel.viewModelScope.launch {
             binding.messageTable.text = viewModel.displayPlayer(this@MainMultiActivity)
-            lockActions = viewModel.currentTurn != playerOnwer
+            lockActions = viewModel.currentTurn != playerPosition
             delay(1500)
             binding.messageTable.text = ""
             viewModel.getCard()
@@ -135,8 +141,8 @@ class MainMultiActivity : AppCompatActivity() {
         }
     }
 
-    private fun getOnwers(index: Int): List<Owner> {
-        return when (index) {
+    private fun getDisplayDistribution(): List<Owner> {
+        return when (playerPosition) {
             0 -> listOf(Owner.PLAYER1, Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4)
             1 -> listOf(Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1)
             2 -> listOf(Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1, Owner.PLAYER2)

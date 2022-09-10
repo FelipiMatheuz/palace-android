@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
 import org.felipimz.palace.R
 import org.felipimz.palace.model.Member
 import org.felipimz.palace.model.Room
@@ -16,19 +15,18 @@ class LobbyViewModel : ViewModel() {
 
     internal var rooms = MutableLiveData<ArrayList<Room>>()
     internal var room = MutableLiveData<Room?>()
-    private var userRoom: Room?
+    internal var userRoom = MutableLiveData<Room?>()
     private var roomListener: ListenerRegistration? = null
     private var firestore = FirebaseFirestore.getInstance()
     var enabledCreateRoomButtom = MutableLiveData(true)
 
     init {
-        userRoom = null
         listenRooms()
     }
 
     private fun listenRooms() {
         firestore.collection("rooms")
-            .orderBy("name", Query.Direction.DESCENDING)
+            .whereNotEqualTo("status", Status.GAME)
             .addSnapshotListener { snapshot, error ->
 
                 if (error != null) {
@@ -87,8 +85,8 @@ class LobbyViewModel : ViewModel() {
     fun updateRoom(room: Room) {
         firestore.collection("rooms")
             .document(room.id).set(room)
-        if (room.id == userRoom?.id) {
-            userRoom = room
+        if (room.id == userRoom.value?.id) {
+            userRoom.value = room
         }
     }
 
@@ -114,7 +112,7 @@ class LobbyViewModel : ViewModel() {
     fun checkStatusUser(itself: Member) {
         firestore.collection("rooms").whereArrayContains("members", itself).get().addOnSuccessListener {
             enabledCreateRoomButtom.value = it.isEmpty
-            userRoom = if (!it.isEmpty) {
+            userRoom.value = if (!it.isEmpty) {
                 val room = it.documents[0]
                 room.toObject(Room::class.java)
             } else {
@@ -147,16 +145,8 @@ class LobbyViewModel : ViewModel() {
     }
 
     fun leaveCurrentRoom(member: Member) {
-        if (userRoom != null) {
-            leaveRoom(userRoom!!, member)
+        if (userRoom.value != null) {
+            leaveRoom(userRoom.value!!, member)
         }
-    }
-
-    fun isGameStarted(): Boolean {
-        return userRoom?.status == Status.GAME
-    }
-
-    fun getGameId(): String{
-        return userRoom!!.id
     }
 }

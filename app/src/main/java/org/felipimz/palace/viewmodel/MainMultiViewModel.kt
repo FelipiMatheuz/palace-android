@@ -14,19 +14,14 @@ import java.time.format.DateTimeFormatter
 class MainMultiViewModel : ViewModel() {
 
     //global deck
-    private val _deck = MutableLiveData<MutableList<Card>>()
     private val cardUtil = CardUtil()
     internal var room = MutableLiveData<Room?>()
     var currentTurn: Int = 1
     private var lastPlayer: Int = 4
-    private val additionalInfo: MutableList<Int>
+    private val additionalInfo: MutableList<Int> = mutableListOf(0, 0)
     private var reverse: Boolean = false
     private var firestore = FirebaseFirestore.getInstance()
-
-    init {
-        _deck.value = mutableListOf()
-        additionalInfo = mutableListOf(0, 0)
-    }
+    private var init = false
 
     fun distributeCard() {
         //init deck and shuffle
@@ -58,6 +53,7 @@ class MainMultiViewModel : ViewModel() {
                     }
                     cardIndex++
                 }
+                this.room.value!!.deck = deck
                 //distribute the rest
                 cardIndex = distributeTable(cardIndex, Owner.PLAYER1)
                 cardIndex = distributeTable(cardIndex, Owner.PLAYER2)
@@ -67,25 +63,23 @@ class MainMultiViewModel : ViewModel() {
                 } else {
                     lastPlayer = 2
                 }
-
-                room.deck = deck
-                updateRoom(room)
+                updateDeck(deck)
             }
     }
 
     private fun distributeTable(index: Int, owner: Owner): Int {
-        _deck.value!![index].position = Position.TABLE_LEFT_DOWN
-        _deck.value!![index].owner = owner
-        _deck.value!![index + 1].position = Position.TABLE_LEFT_UP
-        _deck.value!![index + 1].owner = owner
-        _deck.value!![index + 2].position = Position.TABLE_CENTER_DOWN
-        _deck.value!![index + 2].owner = owner
-        _deck.value!![index + 3].position = Position.TABLE_CENTER_UP
-        _deck.value!![index + 3].owner = owner
-        _deck.value!![index + 4].position = Position.TABLE_RIGHT_DOWN
-        _deck.value!![index + 4].owner = owner
-        _deck.value!![index + 5].position = Position.TABLE_RIGHT_UP
-        _deck.value!![index + 5].owner = owner
+        room.value!!.deck[index].position = Position.TABLE_LEFT_DOWN
+        room.value!!.deck[index].owner = owner
+        room.value!!.deck[index + 1].position = Position.TABLE_LEFT_UP
+        room.value!!.deck[index + 1].owner = owner
+        room.value!!.deck[index + 2].position = Position.TABLE_CENTER_DOWN
+        room.value!!.deck[index + 2].owner = owner
+        room.value!!.deck[index + 3].position = Position.TABLE_CENTER_UP
+        room.value!!.deck[index + 3].owner = owner
+        room.value!!.deck[index + 4].position = Position.TABLE_RIGHT_DOWN
+        room.value!!.deck[index + 4].owner = owner
+        room.value!!.deck[index + 5].position = Position.TABLE_RIGHT_UP
+        room.value!!.deck[index + 5].owner = owner
 
         return index + 6
     }
@@ -94,10 +88,10 @@ class MainMultiViewModel : ViewModel() {
 
         var burned = false
 
-        val listTarget = _deck.value!!.filter {
+        val listTarget = room.value!!.deck.filter {
             listCard.contains(it)
         }
-        val previousTopDiscardedCard = _deck.value!!.singleOrNull {
+        val previousTopDiscardedCard = room.value!!.deck.singleOrNull {
             it.position == Position.ON_TOP
         }
 
@@ -133,11 +127,16 @@ class MainMultiViewModel : ViewModel() {
             }
         }
 
-        _deck.postValue(_deck.value)
+        updateDeck(room.value!!.deck)
 
         if (!burned) {
             changeTurn()
         }
+    }
+
+    private fun updateDeck(deck: MutableList<Card>) {
+        firestore.collection("rooms")
+            .document(room.value!!.id).update("deck", deck)
     }
 
     private fun changeTurn() {
@@ -158,7 +157,7 @@ class MainMultiViewModel : ViewModel() {
 
     private fun backToHand(target: Card) {
         target.position = Position.HAND
-        _deck.value!!.forEach {
+        room.value!!.deck.forEach {
             if (it.owner == Owner.DISCARDED) {
                 it.owner = target.owner
                 it.position = Position.HAND
@@ -169,7 +168,7 @@ class MainMultiViewModel : ViewModel() {
     }
 
     private fun addToBurn() {
-        _deck.value!!.forEach {
+        room.value!!.deck.forEach {
             if (it.owner == Owner.DISCARDED) {
                 it.owner = Owner.BURNED
                 it.position = Position.NONE
@@ -194,7 +193,7 @@ class MainMultiViewModel : ViewModel() {
 
     fun getCard() {
 
-        val target = _deck.value!!.filter {
+        val target = room.value!!.deck.filter {
             it.owner == Owner.ON_PILE
         }
         if (target.isNotEmpty()) {
@@ -205,20 +204,20 @@ class MainMultiViewModel : ViewModel() {
                 3 -> Owner.PLAYER3
                 else -> Owner.PLAYER4
             }
-            _deck.postValue(_deck.value)
+            updateDeck(room.value!!.deck)
         }
     }
 
     fun changeHand(card: Card) {
-        val target = _deck.value!!.single {
+        val target = room.value!!.deck.single {
             it == card
         }
-        val cardHandClicked = _deck.value!!.singleOrNull { it.position == Position.HAND_CLICKED }
+        val cardHandClicked = room.value!!.deck.singleOrNull { it.position == Position.HAND_CLICKED }
 
         if (cardHandClicked != null) {
             cardHandClicked.position = target.position
             target.position = Position.HAND
-            _deck.postValue(_deck.value)
+            updateDeck(room.value!!.deck)
         }
     }
 
@@ -234,11 +233,9 @@ class MainMultiViewModel : ViewModel() {
         historyViewModel.setHistoryList(history)
     }
 
-    fun shufflePlayers(playerId: String): Int {
+    fun shufflePlayers() {
         room.value?.members = room.value?.members?.shuffled()?.toMutableList()!!
         updateRoom(room.value!!)
-
-        return room.value!!.members.indexOf(room.value!!.members.filter { f -> f.id == playerId }[0]) + 1
     }
 
     private fun updateRoom(room: Room) {
@@ -257,7 +254,10 @@ class MainMultiViewModel : ViewModel() {
                 if (snapshot != null) {
                     val room = snapshot.toObject(Room::class.java)
                     this.room.value = room
-                    activity.loadGame()
+                    if (!init) {
+                        init = true
+                        activity.loadGame()
+                    }
                 }
             }
 

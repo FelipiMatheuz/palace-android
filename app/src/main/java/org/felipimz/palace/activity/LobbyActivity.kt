@@ -54,6 +54,16 @@ class LobbyActivity : AppCompatActivity() {
         binding.btnNewRoom.setOnClickListener {
             viewDialogNewRoom()
         }
+        viewModel.userRoom.observe(this) {
+            if (it?.status == Status.GAME) {
+                isPlaying = true
+                val multiplayerIntent = Intent(this, MainMultiActivity::class.java)
+                multiplayerIntent.putExtra("room_id", it.id)
+                multiplayerIntent.putExtra("player_id", auth.uid!!)
+                startActivity(multiplayerIntent)
+                finish()
+            }
+        }
     }
 
     public override fun onStart() {
@@ -78,14 +88,6 @@ class LobbyActivity : AppCompatActivity() {
             adapter.updateList(it)
             syncRooms()
             viewModel.checkStatusUser(userMember)
-            if (viewModel.isGameStarted()) {
-                isPlaying = true
-                val multiplayerIntent = Intent(this, MainMultiActivity::class.java)
-                multiplayerIntent.putExtra("room_id", viewModel.getGameId())
-                multiplayerIntent.putExtra("player_id", auth.uid!!)
-                startActivity(multiplayerIntent)
-                finish()
-            }
         }
 
         viewModel.enabledCreateRoomButtom.observe(this) {
