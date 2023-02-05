@@ -63,7 +63,7 @@ class MainMultiViewModel : ViewModel() {
                 } else {
                     lastPlayer = 2
                 }
-                updateDeck(deck)
+                updateDeck(this.room.value!!.deck)
             }
     }
 
@@ -264,15 +264,15 @@ class MainMultiViewModel : ViewModel() {
     }
 
     fun displayPlayer(context: Context): String {
-        return "${context.getString(R.string.turn)} ${room.value?.members?.get(currentTurn - 1)}"
+        return "${context.getString(R.string.turn)} ${room.value?.members?.get(currentTurn - 1)?.displayName}"
     }
 
     fun displayWinner(context: Context, index: Int): String {
-        return "${context.getString(R.string.winner)} ${room.value?.members?.get(index)}"
+        return "${context.getString(R.string.winner)} ${room.value?.members?.get(index)?.displayName}"
     }
 
-    fun updateStatus(playerOnwer: Int) {
-        room.value!!.members[playerOnwer].status = Status.READY
+    fun updateStatus(playerPosition: Int) {
+        room.value!!.members[playerPosition].status = Status.READY
         updateRoom(room.value!!)
     }
 

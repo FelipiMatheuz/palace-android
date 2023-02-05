@@ -40,7 +40,7 @@ class CardHandMultiAdapter(
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: CardHandHolder, position: Int) {
         val card = listCard[position]
-        if (card.owner == Owner.PLAYER1) {
+        if (card.owner == activity.owners[0]) {
             val resId = activity.resources.getIdentifier(card.name, "drawable", activity.packageName)
             holder.ivCardItem.setImageResource(resId)
         } else {
@@ -52,7 +52,7 @@ class CardHandMultiAdapter(
             null
         }
 
-        if (listCard.isNotEmpty() && card.owner == Owner.PLAYER1 && !activity.lockActions) {
+        if (listCard.isNotEmpty() && card.owner == activity.owners[0] && !activity.lockActions) {
             holder.cvCard.setOnClickListener {
                 if (activity.isSetupCards) {
                     if (card.position == Position.HAND_CLICKED) {

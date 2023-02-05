@@ -31,7 +31,7 @@ class MainMultiActivity : AppCompatActivity() {
     var lockActions: Boolean = false
     var isSetupCards: Boolean = true
     private var allSet: Boolean = false
-    private var owners = listOf<Owner>()
+    var owners = listOf<Owner>()
     private var playerPosition = -1
     private var isRoomOwner = false
 
@@ -48,14 +48,15 @@ class MainMultiActivity : AppCompatActivity() {
     }
 
     fun loadGame() {
+
         isRoomOwner = viewModel.room.value!!.members.indexOf(viewModel.room.value!!.members.filter { f ->
             f.id == intent.extras!!.getString("player_id")
         }[0]) == 0
         if (isRoomOwner) {
             viewModel.distributeCard()
             viewModel.shufflePlayers()
-            loadOwners()
         }
+        loadOwners()
         loadGameSetup()
         viewModel.room.observe(this) { value: Room? ->
             if (value == null) {
@@ -146,6 +147,7 @@ class MainMultiActivity : AppCompatActivity() {
             0 -> listOf(Owner.PLAYER1, Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4)
             1 -> listOf(Owner.PLAYER2, Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1)
             2 -> listOf(Owner.PLAYER3, Owner.PLAYER4, Owner.PLAYER1, Owner.PLAYER2)
+            3 -> listOf(Owner.PLAYER4, Owner.PLAYER1, Owner.PLAYER2, Owner.PLAYER3)
             else -> listOf()
         }
     }

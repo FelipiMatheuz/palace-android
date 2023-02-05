@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import org.felipimz.palace.R
 import org.felipimz.palace.model.Member
 import org.felipimz.palace.model.Room
@@ -26,9 +27,8 @@ class LobbyViewModel : ViewModel() {
 
     private fun listenRooms() {
         firestore.collection("rooms")
-            .whereNotEqualTo("status", Status.GAME)
+            .orderBy("name", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
-
                 if (error != null) {
                     return@addSnapshotListener
                 }
