@@ -22,10 +22,7 @@ There were some steps (tasks) it had to consider when the game started to be imp
 - [x] Match records
 - [x] Tutorial
 
-Other steps in development:
-- [ ] Multiplayer feature
-- [ ] Credits
-- [ ] Records on server
+**The project no more receive any updates and replaced by "palace-v2" project**
 
 ## System setup (for project)
 
