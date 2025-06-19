@@ -22,7 +22,7 @@ There were some steps (tasks) it had to consider when the game started to be imp
 - [x] Match records
 - [x] Tutorial
 
-**The project no more receive any updates and replaced by "palace-v2" project**
+**The project no more receive any updates and replaced by ["palace-v2" project](https://play.google.com/store/apps/details?id=com.felipimatheuz.palace)**
 
 ## System setup (for project)
 
@@ -34,7 +34,5 @@ Recommended apps & plugins:
 ## System setup (for app)
 
 Recommended Android Oreo (8.0) or superior.
-
-
 
 [⬆ Back to Top](#palace-android)<br>
